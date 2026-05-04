@@ -176,7 +176,7 @@ function App() {
                 </ul>
                 <p style="font-size: 14px; color: #666; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
                   Find. Hire. Build.<br>
-                  © 2026 Vorak — vorakfreelance.com
+                  © 2026 Vorak — vorakfreelancers.com
                 </p>
               </div>
             `,
