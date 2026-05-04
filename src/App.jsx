@@ -54,7 +54,7 @@ const translations = {
     success: '🎉 Դուք ցանկում եք, {name}!',
     successSub: 'Մենք կուղարկենք ձեզ նամակ Vorak-ի թողարկման պահին:',
     developedBy: 'Մշակված է Digital Vibe Software-ի կողմից',
-    founder: 'Հիմնադիր՝ Անդրե Մանուկյան',
+    founder: 'Հիմնադիր՝ Անդրէ Մանուկեան',
     regions: 'Հայաստան · Վրաստան · Ղազախստան'
   },
   ru: {
@@ -110,9 +110,9 @@ function App() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCount((prev) => {
-        if (prev >= 618) {
+        if (prev >= 673) {
           clearInterval(timer)
-          return 618
+          return 673
         }
         return prev + 1
       })
@@ -176,7 +176,7 @@ function App() {
                 </ul>
                 <p style="font-size: 14px; color: #666; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
                   Find. Hire. Build.<br>
-                  © 2026 Vorak — vorakfreelancers.com
+                  © 2026 Vorak — vorakfreelance.com
                 </p>
               </div>
             `,
@@ -343,7 +343,7 @@ function App() {
 
       <footer className="footer">
         <div className="footer-content">
-          <p style={{ color: 'var(--text-heading)', marginBottom: '1rem' }}>© 2026 Vorak — vorakfreelancers.com</p>
+          <p style={{ color: 'var(--text-heading)', marginBottom: '1rem' }}>© 2026 Vorak — vorakfreelance.com</p>
           <div className="footer-links">
             <a href="https://www.instagram.com/vorakfreelancers/" target="_blank" rel="noopener noreferrer">Instagram</a>
             <a href="https://t.me/+uLcFQno7ITdmYjQy" target="_blank" rel="noopener noreferrer">Telegram</a>
