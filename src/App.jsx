@@ -110,9 +110,9 @@ function App() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCount((prev) => {
-        if (prev >= 673) {
+        if (prev >= 684) {
           clearInterval(timer)
-          return 673
+          return 684
         }
         return prev + 1
       })
@@ -176,7 +176,7 @@ function App() {
                 </ul>
                 <p style="font-size: 14px; color: #666; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
                   Find. Hire. Build.<br>
-                  © 2026 Vorak — vorakfreelancers.com
+                  © 2026 Vorak — vorakfreelance.com
                 </p>
               </div>
             `,
