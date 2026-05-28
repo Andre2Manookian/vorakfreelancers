@@ -14,7 +14,21 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VORAK | Find. Hire. Build.</title>
+  <meta name="color-scheme" content="dark light">
+  <link rel="stylesheet" href="/src/App.css">
+  <title>Vorak Freelance | Find. Hire. Build.</title>
+  <meta name="description"
+    content="The freelance marketplace built for Armenia and the Caucasus. Local language, local payments, only 8% commission." />
+  <script>
+    (function () {
+      var t = localStorage.getItem('theme');
+      if (t !== 'light' && t !== 'dark') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+      document.documentElement.style.colorScheme = t;
+    })();
+  </script>
+  <script
+    src="https://www.paypal.com/sdk/js?client-id=Aa-GoNxCKYrB0h9PuM7IfuY_ZqMJ3sC820R0yI90yfgFnJn4ZzytkdQwGRkH8wQayJvTdbFavWG8MSwN&currency=USD&enable-funding=card&disable-funding=paylater,venmo"></script>
 </head>
 
 <body>

@@ -1,0 +1,150 @@
+.verification-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+.verification-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.verification-header h1 {
+  font-size: 40px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #a1a1aa;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.benefit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 32px 24px;
+  border-radius: 16px;
+  text-align: center;
+  transition: transform 0.3s;
+}
+
+.benefit-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-teal);
+}
+
+.benefit-icon {
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.benefit-card h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.benefit-card p {
+  font-size: 14px;
+  color: #71717a;
+  line-height: 1.5;
+}
+
+.verification-form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 48px;
+}
+
+.current-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 40px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+.upload-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.upload-item {
+  display: flex;
+  gap: 24px;
+}
+
+.item-number {
+  width: 32px;
+  height: 32px;
+  background: var(--color-teal);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.item-content h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.item-content p {
+  font-size: 14px;
+  color: #71717a;
+  margin-bottom: 16px;
+}
+
+.file-input {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  padding: 12px;
+  border-radius: 8px;
+  color: var(--text-primary);
+  width: 100%;
+}
+
+.file-ready {
+  margin-top: 8px;
+  color: #10b981;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pending-state {
+  text-align: center;
+  padding: 40px 0;
+}
+
+.pending-icon {
+  font-size: 64px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+  .benefits-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .verification-form-card {
+    padding: 32px 24px;
+  }
+
+  .upload-item {
+    flex-direction: column;
+    gap: 16px;
+  }
+}

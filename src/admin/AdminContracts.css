@@ -1,0 +1,84 @@
+.admin-contracts {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  animation: fadeIn 0.3s ease;
+}
+
+.contract-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.contract-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.contract-id-sm {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-family: monospace;
+}
+
+.participants-cell {
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.participants-cell .label {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.amount-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.amount-cell .total {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.amount-cell .payout {
+  font-size: 12px;
+  color: var(--accent);
+}
+
+.status-pill {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-pill.amber { background: var(--warning-bg); color: var(--warning); }
+.status-pill.teal { background: var(--accent-light); color: var(--accent); }
+.status-pill.blue { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+.status-pill.green { background: var(--success-bg); color: var(--success); }
+.status-pill.red { background: var(--error-bg); color: var(--error); }
+.status-pill.gray { background: var(--bg-secondary); color: var(--text-secondary); }
+
+.btn-teal {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-teal:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}

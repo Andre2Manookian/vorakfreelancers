@@ -1,0 +1,490 @@
+.talent-profile-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.profile-container {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 40px;
+}
+
+.profile-header-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+
+.profile-banner {
+  height: 200px;
+  background: linear-gradient(135deg, var(--color-teal), var(--color-teal-dark));
+}
+
+.profile-header-content {
+  padding: 0 32px 32px;
+}
+
+.profile-avatar-section {
+  display: flex;
+  gap: 24px;
+  margin-top: -60px;
+  margin-bottom: 32px;
+}
+
+.profile-avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid var(--bg-card);
+  object-fit: cover;
+  background: var(--border);
+}
+
+.profile-avatar-placeholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid var(--bg-card);
+  background: var(--color-teal-dark);
+  color: var(--color-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  font-weight: 700;
+}
+
+.profile-verified-badge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: var(--color-teal);
+  color: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--bg-card);
+}
+
+.profile-basic-info {
+  padding-top: 60px;
+}
+
+.profile-name {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.profile-tagline {
+  font-size: 18px;
+  color: #a1a1aa;
+  margin-bottom: 12px;
+}
+
+.profile-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 14px;
+  color: #71717a;
+}
+
+.profile-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profile-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3f3f46;
+}
+
+.profile-status.online .status-dot {
+  background: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+.profile-stats-bar {
+  display: flex;
+  gap: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.star-icon {
+  color: #fbbf24;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #71717a;
+}
+
+.profile-section {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 32px;
+  border: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.section-header .section-title {
+  margin-bottom: 0;
+}
+
+.profile-about p {
+  line-height: 1.6;
+  color: #d1d1d1;
+  white-space: pre-line;
+}
+
+.profile-about:not(.expanded) p {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.profile-skills,
+.profile-languages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skill-pill {
+  background: rgba(15, 110, 86, 0.1);
+  color: var(--color-teal);
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.lang-pill {
+  background: var(--border);
+  color: #d1d1d1;
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-size: 14px;
+}
+
+.services-scroll {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+}
+
+.service-mini-card {
+  flex-shrink: 0;
+  width: 240px;
+  background: var(--bg-card);
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  transition: transform 0.3s;
+}
+
+.service-mini-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-teal);
+}
+
+.service-thumb {
+  width: 100%;
+  height: 135px;
+  object-fit: cover;
+}
+
+.service-info {
+  padding: 12px;
+}
+
+.service-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.service-price {
+  font-size: 14px;
+  color: var(--color-teal);
+  font-weight: 700;
+}
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.portfolio-item {
+  position: relative;
+  aspect-ratio: 4/3;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.portfolio-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.portfolio-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 110, 86, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+  color: white;
+}
+
+.portfolio-item:hover .portfolio-img {
+  transform: scale(1.1);
+}
+
+.portfolio-item:hover .portfolio-overlay {
+  opacity: 1;
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.review-card {
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.review-card:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.reviewer-info {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.reviewer-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.reviewer-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.review-date {
+  font-size: 12px;
+  color: #71717a;
+}
+
+.review-rating {
+  color: #fbbf24;
+  letter-spacing: 2px;
+}
+
+.review-content {
+  line-height: 1.6;
+  color: #d1d1d1;
+}
+
+.talent-response {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--border);
+  border-radius: 8px;
+  border-left: 3px solid var(--color-teal);
+}
+
+.talent-response strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: var(--color-teal);
+}
+
+.talent-response p {
+  font-style: italic;
+  font-size: 14px;
+  margin: 0;
+}
+
+.profile-right .sticky-card {
+  position: sticky;
+  top: 100px;
+}
+
+.price-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 32px;
+  border: 1px solid var(--color-teal);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.price-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--color-teal);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.price-unit {
+  font-size: 16px;
+  color: #71717a;
+  font-weight: 500;
+}
+
+.info-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  color: #d1d1d1;
+}
+
+.info-row svg {
+  color: var(--color-teal);
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.utility-buttons {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 1024px) {
+  .profile-container {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-right .sticky-card {
+    position: static;
+  }
+
+  .portfolio-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .profile-avatar-section {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .profile-basic-info {
+    padding-top: 0;
+  }
+
+  .profile-meta {
+    justify-content: center;
+  }
+
+  .profile-stats-bar {
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+  }
+}

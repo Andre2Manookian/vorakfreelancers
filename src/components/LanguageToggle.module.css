@@ -1,0 +1,37 @@
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+}
+
+.btn {
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  color: var(--text-primary);
+}
+
+.btn.active {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+@media (max-width: 768px) {
+  .btn {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+}

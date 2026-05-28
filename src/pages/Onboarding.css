@@ -1,0 +1,202 @@
+.onboarding-page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+.onboarding-progress {
+  margin-bottom: 40px;
+}
+
+.onboarding-progress-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.onboarding-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.onboarding-progress-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.onboarding-step-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.onboarding-step-desc {
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+.avatar-upload {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 2px dashed var(--border);
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  background: var(--bg-card);
+  transition: border-color 0.2s ease;
+}
+
+.avatar-upload:hover {
+  border-color: var(--accent);
+}
+
+.avatar-upload img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-upload-placeholder {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  padding: 16px;
+}
+
+.onboarding-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.onboarding-actions .btn-ghost {
+  flex: 1;
+}
+
+.onboarding-actions .btn-primary {
+  flex: 2;
+}
+
+.skills-input-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.skills-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.skill-pill button {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.skill-pill button:hover {
+  color: var(--error);
+}
+
+.lang-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.lang-checkboxes label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.lang-checkboxes input {
+  accent-color: var(--accent);
+}
+
+.rate-input-wrap {
+  position: relative;
+}
+
+.rate-prefix {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.rate-input-wrap .input {
+  padding-left: 32px;
+}
+
+.char-count {
+  text-align: right;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+.onboarding-complete {
+  text-align: center;
+  padding: 24px 0;
+}
+
+.complete-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  animation: scaleIn 0.4s ease;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.complete-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.onboarding-error {
+  color: var(--error);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
