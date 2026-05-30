@@ -183,13 +183,48 @@
   border-top: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .talent-card-price-info {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.talent-card-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.talent-card-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--text-primary);
+  background: rgba(15, 110, 86, 0.15);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.talent-card-button:hover {
+  background: var(--bg-card);
+  border-color: var(--color-teal);
+}
+
+.talent-card-button-chat {
+  background: #0F6E56;
+  color: white;
+}
+
+.talent-card-button-chat:hover {
+  background: #0d5b48;
 }
 
 .talent-card-price-label {

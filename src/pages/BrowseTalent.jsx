@@ -4,9 +4,11 @@ import { supabase } from '../lib/supabase'
 import { CATEGORIES, LANGUAGES_FILTER } from '../lib/helpers'
 import TalentCard from '../components/TalentCard'
 import LoadingSpinner from '../components/LoadingSpinner'
+import { useLanguage } from '../contexts/LanguageContext'
 import './BrowseTalent.css'
 
 export default function BrowseTalent() {
+  const { t } = useLanguage()
   const [searchParams, setSearchParams] = useSearchParams()
   const [talents, setTalents] = useState([])
   const [loading, setLoading] = useState(true)
@@ -153,13 +155,13 @@ export default function BrowseTalent() {
       {/* ── Hero ── */}
       <div className="bt-hero">
         <div className="bt-hero-inner">
-          <h1>Browse Talent</h1>
-          <p>Find skilled freelancers for your next project</p>
+          <h1>{t('browseTalent.title')}</h1>
+          <p>{t('browseTalent.subtitle')}</p>
           <div className="bt-search-wrap">
             <span className="bt-search-icon">🔍</span>
             <input
               type="text"
-              placeholder="Search by name or skill..."
+              placeholder={t('browseTalent.searchPlaceholder')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="search-input"
@@ -175,9 +177,9 @@ export default function BrowseTalent() {
           {/* Sidebar */}
           <aside className="filters-sidebar">
             <div className="filter-group">
-              <label>Category</label>
+              <label>{t('browseTalent.categoryLabel')}</label>
               <select value={category} onChange={(e) => setCategory(e.target.value)}>
-                <option value="All">All Categories</option>
+                <option value="All">{t('browseTalent.categoryLabel')} - All</option>
                 {CATEGORIES.map(cat => (
                   <option key={cat.slug} value={cat.name}>{cat.name}</option>
                 ))}
@@ -185,7 +187,7 @@ export default function BrowseTalent() {
             </div>
 
             <div className="filter-group">
-              <label>Hourly Rate ($)</label>
+              <label>{t('browseTalent.hourlyRateLabel')}</label>
               <div className="price-inputs">
                 <input type="number" placeholder="Min" value={minPrice} onChange={(e) => setMinPrice(e.target.value)} />
                 <input type="number" placeholder="Max" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} />
@@ -193,7 +195,7 @@ export default function BrowseTalent() {
             </div>
 
             <div className="filter-group">
-              <label>Skills</label>
+              <label>{t('browseTalent.skillsLabel')}</label>
               <input
                 type="text"
                 placeholder="e.g. React, Figma..."
@@ -203,7 +205,7 @@ export default function BrowseTalent() {
             </div>
 
             <div className="filter-group">
-              <label>Languages</label>
+              <label>{t('browseTalent.languagesLabel')}</label>
               <div className="checkbox-group">
                 {LANGUAGES_FILTER.map(lang => (
                   <label key={lang} className="checkbox-label">
@@ -243,10 +245,10 @@ export default function BrowseTalent() {
             </div>
 
             <button onClick={handleApplyFilters} className="btn-primary" style={{ width: '100%' }}>
-              Apply Filters
+              {t('browseTalent.applyFilters')}
             </button>
             <button onClick={handleResetFilters} className="btn-link" style={{ width: '100%', textAlign: 'center' }}>
-              Reset Filters
+              {t('browseTalent.resetFilters')}
             </button>
           </aside>
 

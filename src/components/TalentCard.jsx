@@ -1,15 +1,16 @@
 import { Link } from 'react-router-dom'
 import { isUserOnline, formatCurrency, getInitials } from '../lib/helpers'
+import { useLanguage } from '../contexts/LanguageContext'
 import VerifiedBadge from './VerifiedBadge'
 import './TalentCard.css'
 
 export default function TalentCard({ talent }) {
+  const { t } = useLanguage()
   const {
     id,
     full_name,
     avatar_url,
     last_seen,
-    role,
     id_verified,
     talent_profiles,
   } = talent
@@ -19,7 +20,7 @@ export default function TalentCard({ talent }) {
   const initials = getInitials(full_name)
 
   return (
-    <Link to={`/talent/${id}`} className="talent-card">
+    <div className="talent-card">
       <div className="talent-card-top">
         <div className="talent-card-avatar-wrapper">
           {avatar_url ? (
@@ -76,12 +77,19 @@ export default function TalentCard({ talent }) {
 
         <div className="talent-card-footer">
           <div className="talent-card-price-info">
-            <span className="talent-card-price-label">Starting from</span>
+            <span className="talent-card-price-label">{t('talentCard.startingFrom')}</span>
             <span className="talent-card-price">{formatCurrency(profile.hourly_rate || 0)}</span>
           </div>
-          <div className="talent-card-hover-btn">View Profile</div>
+          <div className="talent-card-actions">
+            <Link to={`/talent/${id}`} className="talent-card-button">
+              {t('talentCard.viewProfile')}
+            </Link>
+            <Link to={`/messages?user=${id}`} className="talent-card-button talent-card-button-chat">
+              {t('talentCard.chat')}
+            </Link>
+          </div>
         </div>
       </div>
-    </Link>
+    </div>
   )
 }

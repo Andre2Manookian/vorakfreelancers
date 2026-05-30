@@ -3,6 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import ServiceCard from '../components/ServiceCard'
 import LoadingSpinner from '../components/LoadingSpinner'
+import { useLanguage } from '../contexts/LanguageContext'
 
 const CATEGORIES = [
   { label: 'All', value: '' },
@@ -17,6 +18,7 @@ const CATEGORIES = [
 ]
 
 export default function BrowseServices() {
+  const { t } = useLanguage()
   const [searchParams, setSearchParams] = useSearchParams()
   const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
@@ -150,12 +152,12 @@ export default function BrowseServices() {
         {/* Search Header */}
         <div style={{ marginBottom: '40px' }}>
           <h1 style={{ fontSize: '32px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '12px' }}>
-            Find the perfect service for your business
+            {t('browseServices.title')}
           </h1>
           <div style={{ position: 'relative', maxWidth: '600px' }}>
             <input
               type="text"
-              placeholder="Search services (e.g. Logo Design, Web Development)"
+              placeholder={t('browseServices.searchPlaceholder')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={{
@@ -183,7 +185,7 @@ export default function BrowseServices() {
                 cursor: 'pointer'
               }}
             >
-              Search
+              {t('browseServices.searchButton')}
             </button>
           </div>
         </div>
@@ -202,7 +204,7 @@ export default function BrowseServices() {
               gap: '24px'
             }}>
               <div>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: '700', marginBottom: '10px' }}>Category</label>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '700', marginBottom: '10px' }}>{t('browseServices.categoryLabel')}</label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                   {CATEGORIES.map(cat => (
                     <button
@@ -229,7 +231,7 @@ export default function BrowseServices() {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: '700', marginBottom: '10px' }}>Budget Range ($)</label>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '700', marginBottom: '10px' }}>{t('browseServices.budgetRange')}</label>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                   <input
                     type="number"
@@ -249,7 +251,7 @@ export default function BrowseServices() {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: '700', marginBottom: '10px' }}>Sort By</label>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '700', marginBottom: '10px' }}>{t('browseServices.sortBy')}</label>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}

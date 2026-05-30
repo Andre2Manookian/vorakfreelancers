@@ -17,6 +17,8 @@ export default function Signup() {
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] =
     useState(false)
+  const [lastSignupAttempt, setLastSignupAttempt] =
+    useState(0)
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -47,6 +49,14 @@ export default function Signup() {
       return
     }
 
+    // Prevent rapid repeated signup attempts (rate limiting)
+    const now = Date.now()
+    if (now - lastSignupAttempt < 2000) {
+      setError('Please wait a moment before trying again')
+      return
+    }
+    setLastSignupAttempt(now)
+
     setLoading(true)
     try {
       await signup(
@@ -58,10 +68,16 @@ export default function Signup() {
       navigate('/onboarding')
     } catch (err) {
       console.error('Signup error:', err)
-      if (err.message?.includes('already')) {
+      const errorMsg = err.message || ''
+      
+      if (errorMsg.includes('already')) {
         setError('Email already registered. Please login.')
+      } else if (errorMsg.includes('rate limit') || errorMsg.includes('email rate')) {
+        setError('Too many signup attempts for this email. Please try a different email or wait a few hours.')
+      } else if (errorMsg.includes('invalid email')) {
+        setError('Please enter a valid email address')
       } else {
-        setError(err.message ||
+        setError(errorMsg ||
           'Signup failed. Please try again.')
       }
     } finally {

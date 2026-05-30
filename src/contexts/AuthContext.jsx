@@ -107,7 +107,8 @@ export function AuthProvider({ children }) {
         email: email.trim(),
         password,
         options: {
-          data: { full_name: fullName, role }
+          data: { full_name: fullName, role },
+          emailRedirectTo: `${window.location.origin}/onboarding`
         }
       })
     if (error) throw error

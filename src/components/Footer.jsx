@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
+import { useLanguage } from '../contexts/LanguageContext'
 
 export default function Footer() {
+  const { t } = useLanguage()
   return (
     <footer style={{
       background: 'var(--bg-secondary)',
@@ -48,30 +50,30 @@ export default function Footer() {
           }}>
             {[
               {
-                title: 'Platform',
+                title: t('footer.platform'),
                 links: [
-                  ['/talent', 'Browse Talent'],
-                  ['/services', 'Services'],
-                  ['/jobs', 'Jobs'],
-                  ['/about', 'About'],
+                  ['/talent', t('footer.browseTalent')],
+                  ['/services', t('footer.browseServices')],
+                  ['/jobs', t('footer.browseJobs')],
+                  ['/about', t('footer.about')],
                 ]
               },
               {
-                title: 'Legal',
+                title: t('footer.legal'),
                 links: [
-                  ['/terms', 'Terms'],
-                  ['/privacy', 'Privacy'],
-                  ['/faq', 'FAQ'],
-                  ['/roadmap', 'Roadmap'],
+                  ['/terms', t('footer.terms')],
+                  ['/privacy', t('footer.privacy')],
+                  ['/faq', t('footer.faq')],
+                  ['/roadmap', t('footer.roadmap')],
                 ]
               },
               {
-                title: 'Account',
+                title: t('footer.account'),
                 links: [
-                  ['/signup', 'Sign Up'],
-                  ['/login', 'Login'],
-                  ['/dashboard', 'Dashboard'],
-                  ['/settings', 'Settings'],
+                  ['/signup', t('nav.signup')],
+                  ['/login', t('nav.login')],
+                  ['/dashboard', t('nav.dashboard')],
+                  ['/settings', t('nav.settings')],
                 ]
               },
             ].map(col => (

@@ -23,6 +23,8 @@ const Signup = lazy(() =>
   import('./pages/Signup'))
 const ForgotPassword = lazy(() =>
   import('./pages/ForgotPassword'))
+const ResetPassword = lazy(() =>
+  import('./pages/ResetPassword'))
 const Onboarding = lazy(() =>
   import('./pages/Onboarding'))
 const Dashboard = lazy(() =>
@@ -146,6 +148,15 @@ export default function App() {
                   } />
                   <Route path="/forgot-password" element={
                     <SafePage><Navbar /><ForgotPassword /></SafePage>
+                  } />
+                  <Route path="/reset-password" element={
+                    <SafePage><Navbar /><ResetPassword /></SafePage>
+                  } />
+                  <Route path="/auth/callback" element={
+                    <SafePage><Navbar /><ResetPassword /></SafePage>
+                  } />
+                  <Route path="/auth/confirm" element={
+                    <SafePage><Navbar /><ResetPassword /></SafePage>
                   } />
                   <Route path="/talent" element={
                     <SafePage><Navbar /><BrowseTalent /><Footer /></SafePage>

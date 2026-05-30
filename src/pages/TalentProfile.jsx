@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
+import { useLanguage } from '../contexts/LanguageContext'
 import {
   formatCurrency,
   formatDate,
@@ -16,6 +17,7 @@ import './TalentProfile.css'
 
 export default function TalentProfile() {
   const { id } = useParams()
+  const { t } = useLanguage()
   const { currentUser } = useAuth()
   const navigate = useNavigate()
 
@@ -188,7 +190,7 @@ export default function TalentProfile() {
           </div>
 
           <section className="profile-section">
-            <h2 className="section-title">About</h2>
+            <h2 className="section-title">{t('talentProfile.about')}</h2>
             <div className={`profile-about ${showFullBio ? 'expanded' : ''}`}>
               <p>{profile.bio || 'No bio provided.'}</p>
             </div>
@@ -200,7 +202,7 @@ export default function TalentProfile() {
           </section>
 
           <section className="profile-section">
-            <h2 className="section-title">Skills</h2>
+            <h2 className="section-title">{t('talentProfile.skills')}</h2>
             <div className="profile-skills">
               {profile.skills?.map((skill, index) => (
                 <span key={index} className="skill-pill">{skill}</span>
@@ -209,7 +211,7 @@ export default function TalentProfile() {
           </section>
 
           <section className="profile-section">
-            <h2 className="section-title">Languages</h2>
+            <h2 className="section-title">{t('talentProfile.languages')}</h2>
             <div className="profile-languages">
               {profile.languages?.map((lang, index) => (
                 <span key={index} className="lang-pill">{lang}</span>
@@ -220,8 +222,8 @@ export default function TalentProfile() {
           {services.length > 0 && (
             <section className="profile-section">
               <div className="section-header">
-                <h2 className="section-title">Services</h2>
-                <Link to="/services" className="btn-link">View All Services</Link>
+                <h2 className="section-title">{t('talentProfile.services')}</h2>
+                <Link to="/services" className="btn-link">{t('talentProfile.viewAllServices')}</Link>
               </div>
               <div className="services-scroll">
                 {services.map(service => (
@@ -283,13 +285,13 @@ export default function TalentProfile() {
                 ))}
               </div>
             ) : (
-              <p className="text-secondary">No portfolio items yet.</p>
+              <p className="text-secondary">{t('talentProfile.noPortfolio')}</p>
             )}
           </section>
 
           <section className="profile-section">
             <div className="section-header">
-              <h2 className="section-title">Reviews</h2>
+              <h2 className="section-title">{t('talentProfile.reviews')}</h2>
               {reviews.length > 0 && (
                 <span style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
                   ★ {profile.rating_avg?.toFixed(1) || '0.0'} · {reviews.length} review{reviews.length !== 1 ? 's' : ''}
@@ -332,12 +334,12 @@ export default function TalentProfile() {
                 ))}
               </div>
             ) : (
-              <p className="text-secondary">No reviews yet. Be the first to leave one!</p>
+              <p className="text-secondary">{t('talentProfile.noReviews')}</p>
             )}
 
             {currentUser && !isOwnProfile && !hasReviewed && (
               <div style={{ marginTop: '24px', padding: '20px', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border)' }}>
-                <h4 style={{ fontSize: '15px', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '12px' }}>Write a Review</h4>
+                <h4 style={{ fontSize: '15px', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '12px' }}>{t('talentProfile.writeReview')}</h4>
                 <div style={{ display: 'flex', gap: '4px', marginBottom: '14px' }}>
                   {[1, 2, 3, 4, 5].map(star => (
                     <span
@@ -361,7 +363,7 @@ export default function TalentProfile() {
                   disabled={reviewRating === 0 || reviewSubmitting}
                   style={{ marginTop: '10px', padding: '10px 24px', background: reviewRating === 0 ? 'var(--bg-card)' : '#0F6E56', color: reviewRating === 0 ? 'var(--text-tertiary)' : 'var(--text-primary)', border: 'none', borderRadius: '8px', fontWeight: '600', fontSize: '14px', cursor: reviewRating === 0 ? 'not-allowed' : 'pointer' }}
                 >
-                  {reviewSubmitting ? 'Submitting...' : 'Submit Review'}
+                  {reviewSubmitting ? t('talentProfile.submitting') : t('talentProfile.submitReview')}
                 </button>
               </div>
             )}
@@ -384,19 +386,19 @@ export default function TalentProfile() {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span>Response time: {profile.response_time || '1 hour'}</span>
+                  <span>{t('talentProfile.responseTime')}: {profile.response_time || '1 hour'}</span>
                 </div>
                 <div className="info-row">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  <span>Member since {formatDate(talent.created_at)}</span>
+                  <span>{t('talentProfile.memberSince')} {formatDate(talent.created_at)}</span>
                 </div>
                 <div className="info-row">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
-                  <span>{talent.id_verified ? 'Identity Verified' : 'Identity Not Verified'}</span>
+                  <span>{talent.id_verified ? t('talentProfile.identityVerified') : t('talentProfile.identityNotVerified')}</span>
                 </div>
                 <div className="info-row">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -409,17 +411,17 @@ export default function TalentProfile() {
               {isOwnProfile ? (
                 <div className="action-buttons">
                   <button onClick={() => navigate('/settings')} className="btn-primary full-width">
-                    Edit Profile
+                    {t('talentProfile.editProfile')}
                   </button>
-                  <button className="btn-outline full-width">Add to Portfolio</button>
+                  <button className="btn-outline full-width">{t('talentProfile.addPortfolio')}</button>
                 </div>
               ) : (
                 <div className="action-buttons">
                   <button onClick={handleContact} className="btn-primary full-width">
-                    Contact
+                    {t('talentProfile.contact')}
                   </button>
                   <button onClick={handleHire} className="btn-outline full-width">
-                    Hire
+                    {t('talentProfile.hire')}
                   </button>
                 </div>
               )}
