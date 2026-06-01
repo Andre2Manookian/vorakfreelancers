@@ -23,6 +23,11 @@ export default function ServiceDetail() {
   const [reviewSubmitting, setReviewSubmitting] = useState(false)
   const [hasReviewed, setHasReviewed] = useState(false)
 
+  // Calculate average rating from reviews
+  const averageRating = reviews.length > 0
+    ? (reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length).toFixed(1)
+    : '0.0'
+
   useEffect(() => {
     fetchService()
   }, [id])
@@ -364,7 +369,7 @@ export default function ServiceDetail() {
               </h2>
               {reviews.length > 0 && (
                 <span style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
-                  ★ {service.rating_avg?.toFixed(1) || '0.0'} · {reviews.length} review{reviews.length !== 1 ? 's' : ''}
+                  ★ {averageRating} · {reviews.length} review{reviews.length !== 1 ? 's' : ''}
                 </span>
               )}
             </div>
