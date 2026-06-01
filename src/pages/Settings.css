@@ -7,7 +7,9 @@
 .settings-hero {
   background: linear-gradient(135deg, rgba(15, 110, 86, 0.08) 0%, transparent 60%);
   border-bottom: 1px solid var(--border);
-  padding: 40px 24px 36px;
+  padding: 100px 24px 36px;
+  position: relative;
+  z-index: 1;
 }
 
 .settings-hero-inner {
@@ -487,7 +489,7 @@
   }
 
   .settings-hero {
-    padding: 28px 16px 24px;
+    padding: 90px 16px 24px;
   }
 
   .settings-content {

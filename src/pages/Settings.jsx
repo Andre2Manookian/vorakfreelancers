@@ -5,9 +5,11 @@ import VerifiedBadge from '../components/VerifiedBadge'
 import { useToast } from '../components/Toast'
 import { uploadFile } from '../lib/cloudinary'
 import { CATEGORIES, LANGUAGES_FILTER } from '../lib/helpers'
+import { useLanguage } from '../contexts/LanguageContext'
 import './Settings.css'
 
 export default function Settings() {
+  const { t } = useLanguage()
   const { currentUser, userProfile, isTalent, fetchProfile, refreshProfile } = useAuth()
   const { showToast } = useToast()
   const [activeTab, setActiveTab] = useState('profile')
@@ -343,20 +345,20 @@ export default function Settings() {
   const removeSkill = (s) => setSkills(skills.filter(skill => skill !== s))
 
   const NOTIF_META = {
-    email_messages: { label: 'Messages', desc: 'When you receive a new message from a client or talent', icon: '💬' },
-    email_proposals: { label: 'Proposals', desc: 'When someone submits a proposal on your job posting', icon: '📨' },
-    email_contracts: { label: 'Contracts', desc: 'Contract updates, milestones, and status changes', icon: '📋' },
-    email_payments: { label: 'Payments', desc: 'Payment received, sent, or withdrawal updates', icon: '💳' },
-    email_reviews: { label: 'Reviews', desc: 'When you receive a new review or rating', icon: '⭐' },
+    email_messages: { label: t('settings.emailMessages'), desc: t('settings.emailMessagesDesc'), icon: '💬' },
+    email_proposals: { label: t('settings.emailProposals'), desc: t('settings.emailProposalsDesc'), icon: '📨' },
+    email_contracts: { label: t('settings.emailContracts'), desc: t('settings.emailContractsDesc'), icon: '📋' },
+    email_payments: { label: t('settings.emailPayments'), desc: t('settings.emailPaymentsDesc'), icon: '💳' },
+    email_reviews: { label: t('settings.emailReviews'), desc: t('settings.emailReviewsDesc'), icon: '⭐' },
   }
 
   const NAV_ITEMS = [
-    { id: 'profile', icon: '👤', label: 'Profile' },
-    ...(isTalent ? [{ id: 'portfolio', icon: '🖼️', label: 'Portfolio' }] : []),
-    ...(isTalent ? [{ id: 'payment', icon: '💳', label: 'Payment' }] : []),
-    { id: 'security', icon: '🔒', label: 'Security' },
-    { id: 'notifications', icon: '🔔', label: 'Notifications' },
-    { id: 'verification', icon: '✅', label: 'Verification' },
+    { id: 'profile', icon: '👤', label: t('settings.profileTab') },
+    ...(isTalent ? [{ id: 'portfolio', icon: '🖼️', label: t('settings.portfolioTab') }] : []),
+    ...(isTalent ? [{ id: 'payment', icon: '💳', label: t('settings.paymentTab') }] : []),
+    { id: 'security', icon: '🔒', label: t('settings.securityTab') },
+    { id: 'notifications', icon: '🔔', label: t('settings.notificationsTab') },
+    { id: 'verification', icon: '✅', label: t('settings.verificationTab') },
   ]
 
   return (
@@ -400,8 +402,8 @@ export default function Settings() {
           {activeTab === 'profile' && (
             <div>
               <div className="settings-section-header">
-                <h2>Profile Settings</h2>
-                <p>Manage your personal information and public profile</p>
+                <h2>{t('settings.profileSettings')}</h2>
+                <p>{t('settings.profileDescription')}</p>
               </div>
 
               <div className="avatar-upload">
@@ -414,7 +416,7 @@ export default function Settings() {
                   <div style={{ fontWeight: '700', fontSize: '15px', color: 'var(--text-primary)', marginBottom: '4px' }}>{fullName}</div>
                   <div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '12px' }}>{currentUser?.email}</div>
                   <label className="btn-outline btn-sm" style={{ cursor: 'pointer' }}>
-                    Change Photo
+                    {t('settings.changePhoto')}
                     <input type="file" onChange={handleAvatarUpload} hidden accept="image/*" />
                   </label>
                 </div>
@@ -422,51 +424,51 @@ export default function Settings() {
 
               <form onSubmit={handleSaveProfile} className="settings-form">
                 <div className="form-group">
-                  <label>Full Name</label>
+                  <label>{t('settings.fullName')}</label>
                   <input type="text" value={fullName} onChange={e => setFullName(e.target.value)} required />
                 </div>
                 <div className="form-group">
-                  <label>Bio</label>
-                  <textarea value={bio} onChange={e => setBio(e.target.value)} maxLength={500} placeholder="Tell clients about yourself..." />
+                  <label>{t('settings.bio')}</label>
+                  <textarea value={bio} onChange={e => setBio(e.target.value)} maxLength={500} placeholder={t('settings.bioPlaceholder')} />
                   <div className="char-count">{bio.length}/500</div>
                 </div>
                 <div className="form-row">
                   <div className="form-group">
-                    <label>Location</label>
-                    <input type="text" value={location} onChange={e => setLocation(e.target.value)} placeholder="City, Country" />
+                    <label>{t('settings.location')}</label>
+                    <input type="text" value={location} onChange={e => setLocation(e.target.value)} placeholder={t('settings.locationPlaceholder')} />
                   </div>
                   <div className="form-group">
-                    <label>Phone Number</label>
-                    <input type="text" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+1 234 567 8900" />
+                    <label>{t('settings.phone')}</label>
+                    <input type="text" value={phone} onChange={e => setPhone(e.target.value)} placeholder={t('settings.phonePlaceholder')} />
                   </div>
                 </div>
 
                 <hr className="form-divider" />
                 <div className="form-group">
-                  <label>Contact Email <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: '400' }}>(visible on your profile)</span></label>
-                  <input type="email" value={contactEmail} onChange={e => setContactEmail(e.target.value)} placeholder="e.g. hello@example.com" />
+                  <label>{t('settings.contactEmail')} <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: '400' }}>({t('settings.contactEmailVisible')})</span></label>
+                  <input type="email" value={contactEmail} onChange={e => setContactEmail(e.target.value)} placeholder={t('settings.contactEmailPlaceholder')} />
                 </div>
                 <div className="form-group">
-                  <label>Telegram <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: '400' }}>(visible on your profile)</span></label>
-                  <input type="text" value={contactTelegram} onChange={e => setContactTelegram(e.target.value)} placeholder="e.g. @username" />
+                  <label>{t('settings.telegram')} <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: '400' }}>({t('settings.telegramVisible')})</span></label>
+                  <input type="text" value={contactTelegram} onChange={e => setContactTelegram(e.target.value)} placeholder={t('settings.telegramPlaceholder')} />
                 </div>
                 {isTalent && (
                   <>
                     <hr className="form-divider" />
                     <div className="form-group">
-                      <label>Tagline</label>
-                      <input type="text" value={tagline} onChange={e => setTagline(e.target.value)} maxLength={100} placeholder="e.g. Senior Web Developer" />
+                      <label>{t('settings.tagline')}</label>
+                      <input type="text" value={tagline} onChange={e => setTagline(e.target.value)} maxLength={100} placeholder={t('settings.taglinePlaceholder')} />
                     </div>
                     <div className="form-group">
-                      <label>Category</label>
+                      <label>{t('settings.category')}</label>
                       <select value={category} onChange={e => setCategory(e.target.value)}>
-                        <option value="">Select Category</option>
+                        <option value="">{t('settings.selectCategory')}</option>
                         {CATEGORIES.map(cat => <option key={cat.slug} value={cat.name}>{cat.name}</option>)}
                       </select>
                     </div>
                     <div className="form-group">
-                      <label>Skills <span style={{ fontWeight: '400', color: 'var(--text-tertiary)', fontSize: '12px' }}>({skills.length}/5 max) — press Enter to add</span></label>
-                      <input type="text" value={skillInput} onChange={e => setSkillInput(e.target.value)} onKeyDown={addSkill} placeholder="e.g. React, Figma, Python" disabled={skills.length >= 5} />
+                      <label>{t('settings.skills')} <span style={{ fontWeight: '400', color: 'var(--text-tertiary)', fontSize: '12px' }}>({t('settings.skillsMax').replace('{count}', skills.length)})</span></label>
+                      <input type="text" value={skillInput} onChange={e => setSkillInput(e.target.value)} onKeyDown={addSkill} placeholder={t('settings.skillsPlaceholder')} disabled={skills.length >= 5} />
                       <div className="skills-list">
                         {skills.map(s => (
                           <span key={s} className="skill-pill">
@@ -476,7 +478,7 @@ export default function Settings() {
                       </div>
                     </div>
                     <div className="form-group">
-                      <label>Languages <span style={{ fontWeight: '400', color: 'var(--text-tertiary)', fontSize: '12px' }}>— select or type to add more</span></label>
+                      <label>{t('settings.languages')} <span style={{ fontWeight: '400', color: 'var(--text-tertiary)', fontSize: '12px' }}>— {t('settings.languagesHint')}</span></label>
                       <div className="checkbox-grid">
                         {LANGUAGES_FILTER.map(lang => (
                           <label key={lang} className="checkbox-label">
@@ -490,7 +492,7 @@ export default function Settings() {
                         value={langInput}
                         onChange={e => setLangInput(e.target.value)}
                         onKeyDown={addCustomLang}
-                        placeholder="Add a language and press Enter..."
+                        placeholder={t('settings.languagesPlaceholder')}
                         style={{ marginTop: '10px' }}
                       />
                       {languages.filter(l => !LANGUAGES_FILTER.includes(l)).length > 0 && (
@@ -505,13 +507,13 @@ export default function Settings() {
                     </div>
                     <div className="form-row">
                       <div className="form-group">
-                        <label>Hourly Rate ($)</label>
+                        <label>{t('settings.hourlyRate')}</label>
                         <input type="number" value={hourlyRate} onChange={e => setHourlyRate(e.target.value)} placeholder="0" />
                       </div>
                       <div className="form-group">
-                        <label>Availability</label>
+                        <label>{t('settings.availability')}</label>
                         <button type="button" className={`avail-btn ${isAvailable ? 'on' : ''}`} onClick={() => setIsAvailable(!isAvailable)}>
-                          {isAvailable ? '🟢 Available' : '🔴 Busy'}
+                          {isAvailable ? t('settings.available') : t('settings.busy')}
                         </button>
                       </div>
                     </div>
@@ -520,7 +522,7 @@ export default function Settings() {
 
                 <div>
                   <button type="submit" className="btn-primary" disabled={loading}>
-                    {loading ? 'Saving...' : 'Save Changes'}
+                    {loading ? t('settings.saving') : t('settings.saveButton')}
                   </button>
                 </div>
               </form>
@@ -531,8 +533,8 @@ export default function Settings() {
           {activeTab === 'portfolio' && isTalent && (
             <div>
               <div className="settings-section-header">
-                <h2>Portfolio</h2>
-                <p>Showcase your best work to potential clients</p>
+                <h2>{t('settings.portfolioTab')}</h2>
+                <p>{t('settings.portfolioDescription')}</p>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '20px' }}>
                 {portfolioItems.map((url, idx) => (
@@ -549,12 +551,12 @@ export default function Settings() {
                     style={{ border: '2px dashed var(--border)', borderRadius: '12px', aspectRatio: '1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-tertiary)', fontSize: '13px', gap: '6px' }}
                   >
                     {portfolioUploading ? '⏳' : '+'}
-                    <span style={{ fontSize: '11px' }}>{portfolioUploading ? 'Uploading...' : 'Add Photo'}</span>
+                    <span style={{ fontSize: '11px' }}>{portfolioUploading ? t('settings.saving') : t('settings.addPortfolio')}</span>
                     <input type="file" accept="image/*" hidden onChange={e => { const f = e.target.files?.[0]; if (f) uploadPortfolioImage(f); e.target.value = '' }} />
                   </label>
                 )}
               </div>
-              <p style={{ fontSize: '12px', color: 'var(--text-tertiary)' }}>{portfolioItems.length}/10 photos · Changes save automatically</p>
+              <p style={{ fontSize: '12px', color: 'var(--text-tertiary)' }}>{portfolioItems.length}/10 {t('settings.maxPortfolio')}</p>
             </div>
           )}
 
@@ -562,24 +564,24 @@ export default function Settings() {
           {activeTab === 'payment' && isTalent && (
             <div>
               <div className="settings-section-header">
-                <h2>Payment Details</h2>
-                <p>Configure how you receive your earnings</p>
+                <h2>{t('settings.paymentSettings')}</h2>
+                <p>{t('settings.paymentDescription')}</p>
               </div>
               <form onSubmit={handleSavePayment} className="settings-form">
                 <div className="form-group">
-                  <label>PayPal Email</label>
+                  <label>{t('settings.paypalEmail')}</label>
                   <input type="email" value={paypalEmail} onChange={e => setPaypalEmail(e.target.value)} placeholder="your@paypal.com" />
                 </div>
                 <div className="form-group">
-                  <label>Wise Email</label>
+                  <label>{t('settings.wiseEmail')}</label>
                   <input type="email" value={wiseEmail} onChange={e => setWiseEmail(e.target.value)} placeholder="your@wise.com" />
                 </div>
                 <div className="form-group">
-                  <label>Bank Transfer Details</label>
+                  <label>{t('settings.bankDetails')}</label>
                   <textarea value={bankDetails} onChange={e => setBankDetails(e.target.value)} placeholder="Bank name, account number, SWIFT/BIC, account holder name..." />
                 </div>
                 <div>
-                  <button type="submit" className="btn-primary" disabled={loading}>Save Payment Details</button>
+                  <button type="submit" className="btn-primary" disabled={loading}>{t('settings.saveButton')}</button>
                 </div>
               </form>
             </div>
@@ -589,40 +591,40 @@ export default function Settings() {
           {activeTab === 'security' && (
             <div>
               <div className="settings-section-header">
-                <h2>Security</h2>
-                <p>Manage your password and account safety</p>
+                <h2>{t('settings.securityTab')}</h2>
+                <p>{t('settings.securityDescription')}</p>
               </div>
               <form onSubmit={handleChangePassword} className="settings-form">
-                <p className="security-section-title">Change Password</p>
+                <p className="security-section-title">{t('settings.changePassword')}</p>
                 <div className="form-group">
-                  <label>New Password</label>
+                  <label>{t('settings.newPassword')}</label>
                   <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} minLength={8} placeholder="Minimum 8 characters" />
                 </div>
                 <div className="form-group">
-                  <label>Confirm New Password</label>
+                  <label>{t('settings.confirmPassword')}</label>
                   <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} minLength={8} placeholder="Repeat your new password" />
                 </div>
                 <div>
-                  <button type="submit" className="btn-primary" disabled={loading}>Update Password</button>
+                  <button type="submit" className="btn-primary" disabled={loading}>{t('settings.changePassword')}</button>
                 </div>
               </form>
 
               <div className="danger-zone">
-                <p className="danger-zone-title">⚠️ Danger Zone</p>
+                <p className="danger-zone-title">⚠️ {t('settings.deleteAccount')}</p>
                 <div className="danger-card">
                   <div>
-                    <h4>Delete Account</h4>
-                    <p>This action is permanent and cannot be undone. All your data, services, and contracts will be removed.</p>
+                    <h4>{t('settings.deleteAccount')}</h4>
+                    <p>{t('settings.deleteWarning')}</p>
                   </div>
                   <div className="delete-actions">
                     <input
                       style={{ background: 'var(--bg-input)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-primary)', padding: '10px 12px', fontSize: '13px', fontFamily: 'inherit', outline: 'none' }}
                       type="text"
-                      placeholder='Type "DELETE" to confirm'
+                      placeholder={t('settings.deleteConfirm')}
                       value={deleteConfirm}
                       onChange={e => setDeleteConfirm(e.target.value)}
                     />
-                    <button className="btn-red" disabled={deleteConfirm !== 'DELETE'} onClick={handleDeleteAccount}>Delete My Account</button>
+                    <button className="btn-red" disabled={deleteConfirm !== 'DELETE'} onClick={handleDeleteAccount}>{t('settings.deleteAccount')}</button>
                   </div>
                 </div>
               </div>
@@ -633,8 +635,8 @@ export default function Settings() {
           {activeTab === 'notifications' && (
             <div>
               <div className="settings-section-header">
-                <h2>Notifications</h2>
-                <p>Choose which email notifications you want to receive</p>
+                <h2>{t('settings.notificationsTab')}</h2>
+                <p>{t('settings.notificationDescription')}</p>
               </div>
               <div className="notif-list">
                 {Object.entries(notifPrefs).map(([key, val]) => {
@@ -661,7 +663,7 @@ export default function Settings() {
               </div>
               <div className="notif-save-row">
                 <button onClick={handleSaveNotifications} className="btn-primary" disabled={loading}>
-                  {loading ? 'Saving...' : 'Save Preferences'}
+                  {loading ? t('settings.saving') : t('settings.saveButton')}
                 </button>
               </div>
             </div>
@@ -671,8 +673,8 @@ export default function Settings() {
           {activeTab === 'verification' && (
             <div>
               <div className="settings-section-header">
-                <h2>ID Verification</h2>
-                <p>Get a verified badge displayed on your profile</p>
+                <h2>{t('settings.verificationSettings')}</h2>
+                <p>{t('settings.verificationDescription')}</p>
               </div>
 
               {userProfile?.id_verified ? (
@@ -709,15 +711,14 @@ export default function Settings() {
                       alignItems: 'center',
                       gap: '8px',
                     }}>
-                      Identity Verified
+                      {t('settings.verificationApproved')}
                       <VerifiedBadge size="sm" />
                     </div>
                     <div style={{
                       fontSize: '13px',
                       color: 'var(--text-secondary)',
                     }}>
-                      Your profile shows a verified badge
-                      to all clients and employers.
+                      {t('settings.verificationDescription')}
                     </div>
                   </div>
                 </div>
@@ -752,7 +753,7 @@ export default function Settings() {
                       color: 'var(--warning)',
                       marginBottom: '4px',
                     }}>
-                      Under Review
+                      {t('settings.verificationPending')}
                     </div>
                     <div style={{
                       fontSize: '13px',
@@ -773,7 +774,7 @@ export default function Settings() {
                         marginTop: '12px',
                       }}
                     >
-                      🔄 Refresh Status
+                      🔄 {t('settings.verificationPending')}
                     </button>
                   </div>
                 </div>
@@ -791,19 +792,19 @@ export default function Settings() {
                     marginBottom: '16px',
                     lineHeight: '1.6',
                   }}>
-                    Verify your identity to get a verified badge on your profile. Verified profiles get 3x more orders.
+                    {t('settings.verificationDescription')}
                   </p>
                   <div className="verification-form mt-8">
                     <div className="form-group">
-                      <label>Step 1: Passport or National ID</label>
+                      <label>{t('settings.idDocument')}</label>
                       <input type="file" onChange={e => setIdDoc(e.target.files[0])} accept="image/*,application/pdf" />
                     </div>
                     <div className="form-group">
-                      <label>Step 2: Selfie holding your document</label>
+                      <label>{t('settings.selfie')}</label>
                       <input type="file" onChange={e => setSelfie(e.target.files[0])} accept="image/*" />
                     </div>
                     <button onClick={handleVerificationSubmit} className="btn-primary" disabled={loading || !idDoc || !selfie}>
-                      Submit for Review
+                      {t('settings.submitVerification')}
                     </button>
                   </div>
                 </div>

@@ -1,13 +1,22 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { useLanguage } from '../contexts/LanguageContext'
 import { supabase } from '../lib/supabase'
 import VerifiedBadge from '../components/VerifiedBadge'
 import './Dashboard.css'
 
 export default function Dashboard() {
   const { currentUser, userProfile } = useAuth()
+  const { t } = useLanguage()
   const navigate = useNavigate()
+  const [showVerifyModal, setShowVerifyModal] = useState(false)
+
+  useEffect(() => {
+    if (userProfile && !userProfile.id_verified) {
+      setShowVerifyModal(true)
+    }
+  }, [userProfile])
   const [contracts, setContracts] = useState([])
   const [services, setServices] = useState([])
   const [jobs, setJobs] = useState([])
@@ -149,26 +158,26 @@ export default function Dashboard() {
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
 
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '32px', flexWrap: 'wrap' }}>
+        <div className="dashboard-header" style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '32px', flexWrap: 'wrap' }}>
           <div className="dashboard-avatar-placeholder">
             {userProfile.full_name?.[0]}
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
               <h1 style={{ fontSize: '22px', fontWeight: '700', color: 'var(--text-primary)' }}>
-                Welcome, {userProfile.full_name?.split(' ')[0]} 👋
+                {t('dashboard.welcome')}, {userProfile.full_name?.split(' ')[0]} 👋
               </h1>
               {userProfile?.id_verified && <VerifiedBadge size="md" />}
             </div>
-            <span className="role-badge">{userProfile.role} Account</span>
+            <span className="role-badge">{userProfile.role} {t('dashboard.account')}</span>
           </div>
-          <div style={{ marginLeft: 'auto', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <div className="dashboard-actions" style={{ marginLeft: 'auto', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
             {isTalent ? (
-              <Link to="/post-service" className="btn btn-primary">+ Post Service</Link>
+              <Link to="/post-service" className="btn btn-primary">+ {t('dashboard.postService')}</Link>
             ) : (
-              <Link to="/post-job" className="btn btn-primary">+ Post Job</Link>
+              <Link to="/post-job" className="btn btn-primary">+ {t('dashboard.postJob')}</Link>
             )}
-            <Link to="/settings" className="btn btn-ghost">⚙️ Settings</Link>
+            <Link to="/settings" className="btn btn-ghost">⚙️ {t('dashboard.settings')}</Link>
           </div>
         </div>
 
@@ -180,48 +189,48 @@ export default function Dashboard() {
           marginBottom: '32px',
         }}>
           <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '12px', padding: '22px' }}>
-            <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '10px' }}>Active Contracts</div>
+            <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '10px' }}>{t('dashboard.activeContracts')}</div>
             <div style={{ fontSize: '30px', fontWeight: '800', color: '#0F6E56', lineHeight: '1' }}>{stats.activeContracts}</div>
           </div>
           {isTalent ? (
             <>
               <Link to="/withdrawal" style={{ background: 'var(--bg-card)', border: '1.5px solid rgba(15,110,86,0.3)', borderRadius: '12px', padding: '22px', textDecoration: 'none', display: 'block' }}>
                 <div style={{ fontSize: '20px', marginBottom: '8px' }}>💰</div>
-                <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '10px' }}>Available Balance</div>
+                <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '10px' }}>{t('dashboard.availableBalance')}</div>
                 <div style={{ fontSize: '30px', fontWeight: '800', color: '#0F6E56', lineHeight: '1' }}>${balance.toFixed(2)}</div>
               </Link>
               {pendingBalance > 0 && (
                 <div style={{ background: 'var(--bg-card)', border: '1.5px solid rgba(245,158,11,0.35)', borderRadius: '12px', padding: '22px' }}>
                   <div style={{ fontSize: '20px', marginBottom: '8px' }}>⏳</div>
-                  <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '10px' }}>Pending Balance</div>
+                  <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '10px' }}>{t('dashboard.pendingBalance')}</div>
                   <div style={{ fontSize: '30px', fontWeight: '800', color: '#f59e0b', lineHeight: '1' }}>${pendingBalance.toFixed(2)}</div>
-                  <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', marginTop: '6px' }}>Awaiting admin release</div>
+                  <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', marginTop: '6px' }}>{t('dashboard.awaitingRelease')}</div>
                 </div>
               )}
             </>
           ) : (
             <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '12px', padding: '22px' }}>
-              <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '10px' }}>Total Spent</div>
+              <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '10px' }}>{t('dashboard.totalSpent')}</div>
               <div style={{ fontSize: '30px', fontWeight: '800', color: '#0F6E56', lineHeight: '1' }}>${Number(stats.totalSpent).toFixed(2)}</div>
             </div>
           )}
           <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '12px', padding: '22px' }}>
-            <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '10px' }}>{isTalent ? 'Total Earned' : 'Jobs Posted'}</div>
+            <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '10px' }}>{isTalent ? t('dashboard.totalEarned') : t('dashboard.jobsPosted')}</div>
             <div style={{ fontSize: '30px', fontWeight: '800', color: '#0F6E56', lineHeight: '1' }}>{isTalent ? '$' + totalEarned.toFixed(2) : jobs.length}</div>
           </div>
           <Link to="/verify" style={{ background: 'var(--bg-card)', border: userProfile.id_verified ? '1px solid #0F6E56' : '1px solid var(--border)', borderRadius: '12px', padding: '22px', textDecoration: 'none' }}>
-            <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '10px' }}>Identity Status</div>
+            <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '10px' }}>{t('dashboard.identityStatus')}</div>
             <div style={{ fontSize: '30px', fontWeight: '800', color: userProfile.id_verified ? '#0F6E56' : 'var(--text-secondary)', lineHeight: '1', marginBottom: '4px' }}>{userProfile.id_verified ? '✓' : '→'}</div>
-            <div style={{ fontSize: '12px', color: 'var(--text-tertiary)' }}>{userProfile.id_verified ? 'Verified' : 'Tap to verify'}</div>
+            <div style={{ fontSize: '12px', color: 'var(--text-tertiary)' }}>{userProfile.id_verified ? t('dashboard.verified') : t('dashboard.tapToVerify')}</div>
           </Link>
         </div>
 
         {/* Content grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: isTalent ? '1fr 1fr' : '1fr', gap: '32px' }}>
+        <div className="dashboard-content-grid" style={{ display: 'grid', gridTemplateColumns: isTalent ? '1fr 1fr' : '1fr', gap: '32px' }}>
           <section>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-              <h2 style={{ fontSize: '18px', fontWeight: '700', color: 'var(--text-primary)' }}>Active Contracts</h2>
-              <Link to="/messages" style={{ fontSize: '13px', fontWeight: '500', color: '#0F6E56', textDecoration: 'none' }}>View all →</Link>
+              <h2 style={{ fontSize: '18px', fontWeight: '700', color: 'var(--text-primary)' }}>{t('dashboard.activeContracts')}</h2>
+              <Link to="/messages" style={{ fontSize: '13px', fontWeight: '500', color: '#0F6E56', textDecoration: 'none' }}>{t('dashboard.viewAll')} →</Link>
             </div>
             {loading ? (
               <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '10px', padding: '40px', textAlign: 'center' }}>
@@ -230,9 +239,9 @@ export default function Dashboard() {
             ) : contracts.length === 0 ? (
               <div style={{ background: 'var(--bg-card)', border: '2px dashed var(--border)', borderRadius: '12px', padding: '40px', textAlign: 'center' }}>
                 <div style={{ fontSize: '40px', marginBottom: '12px' }}>📋</div>
-                <h3 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '8px' }}>No active contracts</h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '16px' }}>{isTalent ? 'Post a service to get hired' : 'Post a job to find talent'}</p>
-                <Link to={isTalent ? '/post-service' : '/post-job'} className="btn btn-primary btn-sm">Get Started</Link>
+                <h3 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '8px' }}>{t('dashboard.noActiveContracts')}</h3>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '16px' }}>{isTalent ? t('dashboard.postServiceToGetHired') : t('dashboard.postJobToFindTalent')}</p>
+                <Link to={isTalent ? '/post-service' : '/post-job'} className="btn btn-primary btn-sm">{t('dashboard.getStarted')}</Link>
               </div>
             ) : (
               <div>
@@ -252,31 +261,32 @@ export default function Dashboard() {
           {isTalent && (
             <section>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                <h2 style={{ fontSize: '18px', fontWeight: '700', color: 'var(--text-primary)' }}>My Services</h2>
-                <Link to="/post-service" style={{ fontSize: '13px', fontWeight: '500', color: '#0F6E56', textDecoration: 'none' }}>+ Add New</Link>
+                <h2 style={{ fontSize: '18px', fontWeight: '700', color: 'var(--text-primary)' }}>{t('dashboard.myServices')}</h2>
+                <Link to="/post-service" style={{ fontSize: '13px', fontWeight: '500', color: '#0F6E56', textDecoration: 'none' }}>+ {t('dashboard.addNew')}</Link>
               </div>
               {services.length === 0 ? (
                 <div style={{ background: 'var(--bg-card)', border: '2px dashed var(--border)', borderRadius: '12px', padding: '40px', textAlign: 'center' }}>
                   <div style={{ fontSize: '40px', marginBottom: '12px' }}>🎯</div>
-                  <h3 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '8px' }}>No services posted</h3>
-                  <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '16px' }}>Start earning by posting your first service</p>
-                  <Link to="/post-service" className="btn btn-primary btn-sm">Post Service</Link>
+                  <h3 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '8px' }}>{t('dashboard.noServicesPosted')}</h3>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '16px' }}>{t('dashboard.startEarning')}</p>
+                  <Link to="/post-service" className="btn btn-primary btn-sm">{t('dashboard.postService')}</Link>
                 </div>
               ) : (
                 <div>
                   {services.map(service => (
-                    <div key={service.id} style={{ display: 'flex', gap: '12px', alignItems: 'center', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '10px', padding: '14px 16px', marginBottom: '10px' }}>
+                    <div key={service.id} className="dashboard-service-card" style={{ display: 'flex', gap: '12px', alignItems: 'center', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '10px', padding: '14px 16px', marginBottom: '10px' }}>
                       <Link to={`/services/${service.id}`} style={{ flex: 1, textDecoration: 'none', minWidth: 0 }}>
                         <div style={{ fontWeight: '600', color: 'var(--text-primary)', marginBottom: '4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{service.title}</div>
                         <div style={{ fontSize: '13px', color: 'var(--text-tertiary)' }}>
-                          {service.orders_count || 0} orders
-                          {service.status === 'paused' && <span style={{ marginLeft: '8px', color: '#f59e0b', fontWeight: '600' }}>· Paused</span>}
+                          {service.orders_count || 0} {t('dashboard.orders')}
+                          {service.status === 'paused' && <span style={{ marginLeft: '8px', color: '#f59e0b', fontWeight: '600' }}>· {t('dashboard.paused')}</span>}
                         </div>
                       </Link>
-                      <span style={{ fontWeight: '700', color: '#0F6E56', flexShrink: 0 }}>${Number(service.price).toFixed(2)}</span>
+                      <span className="service-price" style={{ fontWeight: '700', color: '#0F6E56', flexShrink: 0 }}>${Number(service.price).toFixed(2)}</span>
                       <button
                         onClick={(e) => handleDeleteService(e, service.id, service.title)}
-                        title="Delete service"
+                        title={t('dashboard.deleteService')}
+                        className="service-delete-btn"
                         style={{ flexShrink: 0, padding: '6px 10px', background: 'transparent', border: '1px solid rgba(226,75,74,0.35)', borderRadius: '7px', color: '#E24B4A', cursor: 'pointer', fontSize: '14px', lineHeight: 1, transition: 'all 0.15s' }}
                         onMouseEnter={e => { e.currentTarget.style.background = 'rgba(226,75,74,0.1)' }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
@@ -292,13 +302,80 @@ export default function Dashboard() {
         {isTalent && balance > 0 && (
           <Link to="/withdrawal" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', background: 'rgba(15,110,86,0.08)', border: '1.5px solid rgba(15,110,86,0.2)', borderRadius: '10px', textDecoration: 'none', marginTop: '24px', transition: 'all 0.2s' }}>
             <div>
-              <div style={{ fontSize: '13px', color: '#0F6E56', fontWeight: '600', marginBottom: '2px' }}>Available for withdrawal</div>
+              <div style={{ fontSize: '13px', color: '#0F6E56', fontWeight: '600', marginBottom: '2px' }}>{t('dashboard.availableForWithdrawal')}</div>
               <div style={{ fontSize: '22px', fontWeight: '800', color: 'var(--text-primary)' }}>${balance.toFixed(2)}</div>
             </div>
-            <div style={{ padding: '10px 18px', background: '#0F6E56', color: 'white', borderRadius: '8px', fontSize: '13px', fontWeight: '700' }}>Withdraw →</div>
+            <div style={{ padding: '10px 18px', background: '#0F6E56', color: 'white', borderRadius: '8px', fontSize: '13px', fontWeight: '700' }}>{t('dashboard.withdraw')} →</div>
           </Link>
         )}
       </div>
+
+      {/* Verification Modal for Unverified Users */}
+      {showVerifyModal && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.6)',
+          backdropFilter: 'blur(4px)',
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px'
+        }}>
+          <div style={{
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border)',
+            borderRadius: '16px',
+            padding: '32px',
+            maxWidth: '420px',
+            width: '100%',
+            textAlign: 'center',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
+          }}>
+            <div style={{ fontSize: '56px', marginBottom: '16px' }}>🔒</div>
+            <h2 style={{ fontSize: '22px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '12px' }}>
+              {t('dashboard.verifyYourProfile')}
+            </h2>
+            <p style={{ fontSize: '15px', color: 'var(--text-secondary)', marginBottom: '24px', lineHeight: '1.6' }}>
+              {t('dashboard.verifyDescription')}
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <Link
+                to="/verify"
+                onClick={() => setShowVerifyModal(false)}
+                style={{
+                  display: 'block',
+                  padding: '14px 24px',
+                  background: '#0F6E56',
+                  color: 'white',
+                  borderRadius: '10px',
+                  textDecoration: 'none',
+                  fontWeight: '600',
+                  fontSize: '15px'
+                }}
+              >
+                {t('dashboard.verifyNow')} →
+              </Link>
+              <button
+                onClick={() => setShowVerifyModal(false)}
+                style={{
+                  padding: '14px 24px',
+                  background: 'transparent',
+                  border: '1px solid var(--border)',
+                  borderRadius: '10px',
+                  color: 'var(--text-secondary)',
+                  cursor: 'pointer',
+                  fontWeight: '500',
+                  fontSize: '15px'
+                }}
+              >
+                {t('dashboard.later')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

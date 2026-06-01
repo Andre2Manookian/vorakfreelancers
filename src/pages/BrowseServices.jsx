@@ -24,6 +24,7 @@ export default function BrowseServices() {
   const [loading, setLoading] = useState(true)
   const [totalCount, setTotalCount] = useState(0)
   const [page, setPage] = useState(1)
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const itemsPerPage = 12
 
   // Filters state
@@ -140,6 +141,8 @@ export default function BrowseServices() {
     transition: 'border-color 0.2s',
   }
 
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -151,10 +154,10 @@ export default function BrowseServices() {
 
         {/* Search Header */}
         <div style={{ marginBottom: '40px' }}>
-          <h1 style={{ fontSize: '32px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '12px' }}>
+          <h1 style={{ fontSize: 'clamp(24px, 5vw, 32px)', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '12px' }}>
             {t('browseServices.title')}
           </h1>
-          <div style={{ position: 'relative', maxWidth: '600px' }}>
+          <div style={{ position: 'relative', maxWidth: '600px', display: 'flex', gap: '8px' }}>
             <input
               type="text"
               placeholder={t('browseServices.searchPlaceholder')}
@@ -162,9 +165,9 @@ export default function BrowseServices() {
               onChange={(e) => setSearch(e.target.value)}
               style={{
                 ...inputStyle,
+                flex: 1,
                 padding: '16px 20px',
                 fontSize: '16px',
-                paddingRight: '120px',
                 boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
               }}
               onKeyPress={(e) => e.key === 'Enter' && handleApplyFilters()}
@@ -172,28 +175,63 @@ export default function BrowseServices() {
             <button
               onClick={handleApplyFilters}
               style={{
-                position: 'absolute',
-                right: '8px',
-                top: '8px',
-                bottom: '8px',
                 background: '#0F6E56',
                 color: 'var(--text-primary)',
                 border: 'none',
                 borderRadius: '8px',
                 padding: '0 20px',
                 fontWeight: '600',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                whiteSpace: 'nowrap'
               }}
             >
-              {t('browseServices.searchButton')}
+              {window.innerWidth <= 480 ? '🔍' : t('browseServices.searchButton')}
             </button>
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '40px' }}>
+        {/* Mobile Filter Toggle */}
+        <div style={{ display: 'none', marginBottom: '16px' }} className="mobile-filter-toggle">
+          <button
+            onClick={() => setMobileFiltersOpen(true)}
+            style={{
+              width: '100%',
+              padding: '12px',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border)',
+              borderRadius: '10px',
+              color: 'var(--text-primary)',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px'
+            }}
+          >
+            ⚙️ {t('browseServices.categoryLabel')} & {t('browseServices.sortBy')}
+          </button>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '40px' }} className="browse-services-layout">
+
+          {/* Mobile Filter Overlay */}
+          {mobileFiltersOpen && (
+            <div
+              style={{
+                position: 'fixed',
+                inset: 0,
+                background: 'rgba(0,0,0,0.5)',
+                zIndex: 999,
+                display: 'none'
+              }}
+              className="mobile-filter-overlay"
+              onClick={() => setMobileFiltersOpen(false)}
+            />
+          )}
 
           {/* Filters Sidebar */}
-          <aside style={{ position: 'sticky', top: '100px', height: 'fit-content' }}>
+          <aside style={{ position: 'sticky', top: '100px', height: 'fit-content' }} className={`services-filters-sidebar ${mobileFiltersOpen ? 'mobile-open' : ''}`}>
             <div style={{
               background: 'var(--bg-card)',
               border: '1px solid var(--border)',
@@ -202,7 +240,23 @@ export default function BrowseServices() {
               display: 'flex',
               flexDirection: 'column',
               gap: '24px'
-            }}>
+            }} className="filters-content">
+              {/* Mobile Close Button */}
+              <div style={{ display: 'none', justifyContent: 'space-between', alignItems: 'center' }} className="mobile-filter-header">
+                <h3 style={{ margin: 0, fontSize: '18px' }}>{t('browseServices.categoryLabel')} & {t('browseServices.sortBy')}</h3>
+                <button
+                  onClick={() => setMobileFiltersOpen(false)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: '24px',
+                    cursor: 'pointer',
+                    color: 'var(--text-primary)'
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
               <div>
                 <label style={{ display: 'block', fontSize: '14px', fontWeight: '700', marginBottom: '10px' }}>{t('browseServices.categoryLabel')}</label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -267,7 +321,7 @@ export default function BrowseServices() {
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '8px' }}>
                 <button
-                  onClick={handleApplyFilters}
+                  onClick={() => { handleApplyFilters(); setMobileFiltersOpen(false); }}
                   style={{
                     background: '#0F6E56',
                     color: 'var(--text-primary)',
@@ -278,7 +332,7 @@ export default function BrowseServices() {
                     cursor: 'pointer'
                   }}
                 >
-                  Apply Filters
+                  {t('browseServices.searchButton')}
                 </button>
                 <button
                   onClick={handleResetFilters}
@@ -292,11 +346,56 @@ export default function BrowseServices() {
                     cursor: 'pointer'
                   }}
                 >
-                  Reset
+                  {t('browseServices.resetButton')}
                 </button>
               </div>
             </div>
           </aside>
+
+          {/* Mobile Responsive Styles */}
+          <style>{`
+            @media (max-width: 768px) {
+              .browse-services-layout {
+                grid-template-columns: 1fr !important;
+              }
+              .mobile-filter-toggle {
+                display: block !important;
+              }
+              .mobile-filter-overlay {
+                display: block !important;
+              }
+              .services-filters-sidebar {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                z-index: 1000;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                overflow-y: auto;
+                padding: 16px !important;
+                background: var(--bg-primary) !important;
+              }
+              .services-filters-sidebar.mobile-open {
+                transform: translateX(0);
+              }
+              .services-filters-sidebar > div {
+                min-height: 100%;
+              }
+              .mobile-filter-header {
+                display: flex !important;
+                padding-bottom: 16px;
+                border-bottom: 1px solid var(--border);
+                margin-bottom: 16px;
+              }
+            }
+            @media (max-width: 480px) {
+              .browse-services-layout {
+                gap: 20px !important;
+              }
+            }
+          `}</style>
 
           {/* Results Grid */}
           <main>
@@ -304,19 +403,21 @@ export default function BrowseServices() {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              marginBottom: '24px'
+              marginBottom: '24px',
+              flexWrap: 'wrap',
+              gap: '12px'
             }}>
-              <h2 style={{ fontSize: '18px', fontWeight: '700', color: 'var(--text-primary)' }}>
-                {totalCount} Services available
+              <h2 style={{ fontSize: '18px', fontWeight: '700', color: 'var(--text-primary)', margin: 0 }}>
+                {totalCount} {t('browseServices.title')}
               </h2>
             </div>
 
             {loading ? (
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
                 gap: '24px'
-              }}>
+              }} className="services-grid">
                 {[...Array(6)].map((_, i) => (
                   <div key={i} style={{
                     height: '380px',
@@ -331,9 +432,9 @@ export default function BrowseServices() {
               <>
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
                   gap: '24px'
-                }}>
+                }} className="services-grid">
                   {services.map(service => (
                     <ServiceCard key={service.id} service={service} />
                   ))}
@@ -363,10 +464,10 @@ export default function BrowseServices() {
                         opacity: page === 1 ? 0.5 : 1
                       }}
                     >
-                      Previous
+                      ←
                     </button>
                     <span style={{ color: 'var(--text-secondary)', fontWeight: '600' }}>
-                      Page {page} of {Math.ceil(totalCount / itemsPerPage)}
+                      {page} / {Math.ceil(totalCount / itemsPerPage)}
                     </span>
                     <button
                       disabled={page >= Math.ceil(totalCount / itemsPerPage)}
@@ -384,7 +485,7 @@ export default function BrowseServices() {
                         opacity: page >= Math.ceil(totalCount / itemsPerPage) ? 0.5 : 1
                       }}
                     >
-                      Next
+                      →
                     </button>
                   </div>
                 )}
@@ -392,15 +493,15 @@ export default function BrowseServices() {
             ) : (
               <div style={{
                 textAlign: 'center',
-                padding: '80px 40px',
+                padding: 'clamp(40px, 10vw, 80px) clamp(20px, 5vw, 40px)',
                 background: 'var(--bg-card)',
                 borderRadius: '20px',
                 border: '1px dashed var(--border)'
               }}>
-                <div style={{ fontSize: '64px', marginBottom: '24px' }}>🔍</div>
-                <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px' }}>No services found</h3>
+                <div style={{ fontSize: 'clamp(48px, 10vw, 64px)', marginBottom: '24px' }}>🔍</div>
+                <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px' }}>{t('browseServices.noResults')}</h3>
                 <p style={{ color: 'var(--text-secondary)', marginBottom: '32px' }}>
-                  We couldn't find any services matching your criteria. Try different keywords or filters.
+                  {t('browseServices.searchPlaceholder')}
                 </p>
                 <button
                   onClick={handleResetFilters}
@@ -414,7 +515,7 @@ export default function BrowseServices() {
                     cursor: 'pointer'
                   }}
                 >
-                  Clear all filters
+                  {t('browseServices.resetButton')}
                 </button>
               </div>
             )}

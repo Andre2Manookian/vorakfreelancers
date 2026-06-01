@@ -163,6 +163,22 @@ export default function Contract() {
                   link: '/contracts/' + contract.id,
                 })
 
+              // Increment orders_count only after successful payment
+              if (contract.service_id) {
+                const { data: service } = await supabase
+                  .from('services')
+                  .select('orders_count')
+                  .eq('id', contract.service_id)
+                  .single()
+
+                if (service) {
+                  await supabase
+                    .from('services')
+                    .update({ orders_count: (service.orders_count || 0) + 1 })
+                    .eq('id', contract.service_id)
+                }
+              }
+
               alert(
                 '\u2705 Payment successful!\n' +
                 'Admin will activate your ' +

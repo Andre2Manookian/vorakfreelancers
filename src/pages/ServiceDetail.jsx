@@ -128,13 +128,6 @@ export default function ServiceDetail() {
 
       if (error) throw error
 
-      await supabase
-        .from('services')
-        .update({
-          orders_count: (service.orders_count || 0) + 1
-        })
-        .eq('id', service.id)
-
       navigate('/contracts/' + data.id)
     } catch (err) {
       console.error('Order error:', err)

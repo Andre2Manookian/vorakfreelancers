@@ -4,14 +4,17 @@ import { supabase } from '../lib/supabase'
 import { CATEGORIES } from '../lib/helpers'
 import JobCard from '../components/JobCard'
 import LoadingSpinner from '../components/LoadingSpinner'
+import { useLanguage } from '../contexts/LanguageContext'
 import './BrowseJobs.css'
 
 export default function BrowseJobs() {
+  const { t } = useLanguage()
   const [searchParams, setSearchParams] = useSearchParams()
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(true)
   const [totalCount, setTotalCount] = useState(0)
   const [page, setPage] = useState(1)
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const itemsPerPage = 10
 
   // Filters state
@@ -131,13 +134,13 @@ export default function BrowseJobs() {
       {/* ── Hero ── */}
       <div className="bj-hero">
         <div className="bj-hero-inner">
-          <h1>Գտի՛ր Քո Հաջորդ Ֆռիլանս Աշխատանքը</h1>
-          <p>Ամբողջ աշխարհի ընկերություններից ու անձնավորություններից պատվերներ</p>
+          <h1>{t('browseJobs.title')}</h1>
+          <p>{t('browseJobs.subtitle')}</p>
           <div className="bj-search-wrap">
             <span className="bj-search-icon">🔍</span>
             <input
               type="text"
-              placeholder="Որոնել աշխատանք..."
+              placeholder={t('browseJobs.searchPlaceholder')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="search-input"
@@ -150,12 +153,36 @@ export default function BrowseJobs() {
       <div className="bj-body">
         <div className="browse-content">
 
+          {/* Mobile Filter Toggle */}
+          <div className="mobile-filter-toggle">
+            <button
+              onClick={() => setMobileFiltersOpen(true)}
+              className="mobile-filter-btn"
+            >
+              ⚙️ {t('browseJobs.filters') || 'Filters'}
+            </button>
+          </div>
+
+          {/* Mobile Filter Overlay */}
+          {mobileFiltersOpen && (
+            <div
+              className="mobile-filter-overlay"
+              onClick={() => setMobileFiltersOpen(false)}
+            />
+          )}
+
           {/* Sidebar */}
-          <aside className="filters-sidebar">
+          <aside className={`filters-sidebar ${mobileFiltersOpen ? 'mobile-open' : ''}`}>
+            {/* Mobile Close Header */}
+            <div className="mobile-filter-header" style={{ display: 'none' }}>
+              <h3>{t('browseJobs.filters') || 'Filters'}</h3>
+              <button onClick={() => setMobileFiltersOpen(false)} className="mobile-filter-close">✕</button>
+            </div>
+
             <div className="filter-group">
-              <label>Կատեգորիա</label>
+              <label>{t('browseJobs.categoryLabel')}</label>
               <select value={category} onChange={(e) => setCategory(e.target.value)}>
-                <option value="All">Բոլոր կատեգորիաները</option>
+                <option value="All">{t('browseJobs.allCategories')}</option>
                 {CATEGORIES.map(cat => (
                   <option key={cat.slug} value={cat.name}>{cat.name}</option>
                 ))}
@@ -163,46 +190,132 @@ export default function BrowseJobs() {
             </div>
 
             <div className="filter-group">
-              <label>Բյուջե ($)</label>
+              <label>{t('browseJobs.budgetLabel')}</label>
               <div className="price-inputs">
-                <input type="number" placeholder="Նվազ." value={minBudget} onChange={(e) => setMinBudget(e.target.value)} />
-                <input type="number" placeholder="Առավ." value={maxBudget} onChange={(e) => setMaxBudget(e.target.value)} />
+                <input type="number" placeholder={t('browseJobs.minPlaceholder')} value={minBudget} onChange={(e) => setMinBudget(e.target.value)} />
+                <input type="number" placeholder={t('browseJobs.maxPlaceholder')} value={maxBudget} onChange={(e) => setMaxBudget(e.target.value)} />
               </div>
             </div>
 
             <div className="filter-group">
-              <label>Տեղադրված</label>
+              <label>{t('browseJobs.postedLabel')}</label>
               <select value={postedWithin} onChange={(e) => setPostedWithin(e.target.value)}>
-                <option value="All">Ամբողջ ժամանակ</option>
-                <option value="Today">Այսօր</option>
-                <option value="Week">Այս շաբաթ</option>
-                <option value="Month">Այս ամիս</option>
+                <option value="All">{t('browseJobs.allTime')}</option>
+                <option value="Today">{t('browseJobs.today')}</option>
+                <option value="Week">{t('browseJobs.thisWeek')}</option>
+                <option value="Month">{t('browseJobs.thisMonth')}</option>
               </select>
             </div>
 
             <div className="filter-group">
-              <label>Դասավորել</label>
+              <label>{t('browseJobs.sortBy')}</label>
               <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                <option value="Newest">Նոր</option>
-                <option value="Budget High">Բյուջե ↓</option>
-                <option value="Budget Low">Բյուջե ↑</option>
-                <option value="Most Proposals">Շատ առաջարկ</option>
-                <option value="Deadline Soon">Վաղ ժամկետ</option>
+                <option value="Newest">{t('browseJobs.newest')}</option>
+                <option value="Budget High">{t('browseJobs.budgetHigh')}</option>
+                <option value="Budget Low">{t('browseJobs.budgetLow')}</option>
+                <option value="Most Proposals">{t('browseJobs.mostProposals')}</option>
+                <option value="Deadline Soon">{t('browseJobs.deadlineSoon')}</option>
               </select>
             </div>
 
-            <button onClick={handleApplyFilters} className="btn-primary" style={{ width: '100%' }}>
-              Կիրառել
+            <button onClick={() => { handleApplyFilters(); setMobileFiltersOpen(false); }} className="btn-primary" style={{ width: '100%' }}>
+              {t('browseJobs.applyFilters')}
             </button>
             <button onClick={handleResetFilters} className="btn-link" style={{ width: '100%', textAlign: 'center' }}>
-              Մաքրել բոլոր ֆիլտրները
+              {t('browseJobs.resetFilters')}
             </button>
+
+            {/* Mobile Responsive Styles */}
+            <style>{`
+              @media (max-width: 768px) {
+                .mobile-filter-toggle {
+                  display: block !important;
+                  margin-bottom: 20px;
+                }
+                .mobile-filter-btn {
+                  width: 100%;
+                  padding: 12px;
+                  background: var(--bg-card);
+                  border: 1px solid var(--border);
+                  border-radius: 10px;
+                  color: var(--text-primary);
+                  font-weight: 600;
+                  cursor: pointer;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  gap: 8px;
+                  font-size: 15px;
+                }
+                .mobile-filter-overlay {
+                  display: block !important;
+                  position: fixed;
+                  inset: 0;
+                  background: rgba(0,0,0,0.5);
+                  z-index: 998;
+                }
+                .filters-sidebar {
+                  position: fixed !important;
+                  top: 0 !important;
+                  left: 0 !important;
+                  right: 0 !important;
+                  bottom: 0 !important;
+                  z-index: 999;
+                  transform: translateX(-100%);
+                  transition: transform 0.3s ease;
+                  overflow-y: auto;
+                  background: var(--bg-primary) !important;
+                  max-width: none !important;
+                }
+                .filters-sidebar.mobile-open {
+                  transform: translateX(0);
+                }
+                .mobile-filter-header {
+                  display: flex !important;
+                  justify-content: space-between;
+                  align-items: center;
+                  padding-bottom: 16px;
+                  margin-bottom: 16px;
+                  border-bottom: 1px solid var(--border);
+                }
+                .mobile-filter-header h3 {
+                  margin: 0;
+                  font-size: 18px;
+                  font-weight: 700;
+                }
+                .mobile-filter-close {
+                  background: none;
+                  border: none;
+                  font-size: 24px;
+                  cursor: pointer;
+                  color: var(--text-primary);
+                  width: 36px;
+                  height: 36px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  border-radius: 8px;
+                }
+                .mobile-filter-close:hover {
+                  background: var(--bg-card);
+                }
+              }
+              @media (min-width: 769px) {
+                .mobile-filter-toggle,
+                .mobile-filter-overlay {
+                  display: none !important;
+                }
+                .mobile-filter-header {
+                  display: none !important;
+                }
+              }
+            `}</style>
           </aside>
 
           {/* Results */}
           <main className="results-container">
             <div className="results-header">
-              <h2>{totalCount} {totalCount === 1 ? 'աշխատանք' : 'աշխատանք'} գտնված</h2>
+              <h2>{t('browseJobs.resultsFound').replace('{count}', totalCount)}</h2>
             </div>
 
             {loading ? (
@@ -219,58 +332,57 @@ export default function BrowseJobs() {
 
                 {totalPages > 1 && (
                   <div className="pagination">
-                    <button disabled={page === 1} onClick={() => setPage(p => p - 1)} className="pagination-btn">← Նախ.</button>
+                    <button disabled={page === 1} onClick={() => setPage(p => p - 1)} className="pagination-btn">←</button>
                     <div className="page-numbers">
                       {[...Array(totalPages)].map((_, i) => (
                         <button key={i} onClick={() => setPage(i + 1)} className={`page-number ${page === i + 1 ? 'active' : ''}`}>{i + 1}</button>
                       ))}
                     </div>
-                    <button disabled={page >= totalPages} onClick={() => setPage(p => p + 1)} className="pagination-btn">Հաջ. →</button>
+                    <button disabled={page >= totalPages} onClick={() => setPage(p => p + 1)} className="pagination-btn">→</button>
                   </div>
                 )}
               </>
             ) : (
               <div className="empty-state">
                 <div className="empty-icon">💼</div>
-                <h3>Աշխատանք չի գտնվել</h3>
-                <p>Փորձի՛ր փոփոխել ֆիլտրերը կամ որոնման բառերը:</p>
-                <button onClick={handleResetFilters} className="btn-primary">Մաքրել ֆիլտրերը</button>
+                <h3>{t('browseJobs.noResults')}</h3>
+                <p>{t('browseJobs.noResultsDescription')}</p>
+                <button onClick={handleResetFilters} className="btn-primary">{t('browseJobs.clearFilters')}</button>
               </div>
             )}
 
             {/* ── Coming Soon ── */}
             <div className="coming-soon-section">
               <div className="cs-header">
-                <div className="cs-badge">🕐 Շուտով</div>
-                <h2 className="cs-title">Ընկերությունների Հայտարարություններ</h2>
+                <div className="cs-badge">🕐 {t('browseJobs.comingSoon')}</div>
+                <h2 className="cs-title">{t('browseJobs.companyJobsTitle')}</h2>
                 <p className="cs-subtitle">
-                  VORAK Freelance-ը շուտով կներկայացնի ամբողջ դրույքի, կես դրույքի
-                  և ստաժավարության հնարավորություններ ընկերությունների համար:
+                  {t('browseJobs.companyJobsSubtitle')}
                 </p>
               </div>
               <div className="cs-cards">
                 {[
                   {
                     icon: '🏢',
-                    title: 'Ամբողջ դրույք',
+                    title: t('browseJobs.fullTime'),
                     en: 'Full-time',
-                    desc: 'Մշտական աշխատանք հեղինակավոր ընկերություններում՝ ամբողջ սոցփաթեթով',
+                    desc: t('browseJobs.fullTimeDesc'),
                   },
                   {
                     icon: '⏰',
-                    title: 'Կես դրույք',
+                    title: t('browseJobs.partTime'),
                     en: 'Part-time',
-                    desc: 'Ճկուն ժամանակացույցով մասնակի աշխատանք՝ քո ռիթմով',
+                    desc: t('browseJobs.partTimeDesc'),
                   },
                   {
                     icon: '🎓',
-                    title: 'Ստաժավարություն',
+                    title: t('browseJobs.internship'),
                     en: 'Internship',
-                    desc: 'Կրթական ու մասնագիտական ծրագրեր ուսանողների և սկսնակների համար',
+                    desc: t('browseJobs.internshipDesc'),
                   },
                 ].map(item => (
                   <div key={item.title} className="cs-card">
-                    <div className="cs-card-badge">Շուտով</div>
+                    <div className="cs-card-badge">{t('browseJobs.comingSoon')}</div>
                     <div className="cs-icon">{item.icon}</div>
                     <p className="cs-card-title">{item.title}</p>
                     <p className="cs-card-en">{item.en}</p>
