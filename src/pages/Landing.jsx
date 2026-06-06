@@ -5,6 +5,9 @@ import { supabase } from '../lib/supabase'
 import { CATEGORIES } from '../lib/helpers'
 import './Landing.css'
 
+// Base offset for signup counter
+const BASE_SIGNUP_COUNT = 100
+
 export default function Landing() {
   const { t } = useLanguage()
   const [userCount, setUserCount] = useState(0)
@@ -87,7 +90,7 @@ export default function Landing() {
           <p className="hero-subtitle">{t('landing.subheadline')}</p>
 
           <div className="hero-counter">
-            <span className="hero-counter-num">{userCount}</span>
+            <span className="hero-counter-num">{userCount + BASE_SIGNUP_COUNT}</span>
             <span className="hero-counter-label">{t('landing.professionalsJoined')}</span>
           </div>
 
@@ -101,7 +104,7 @@ export default function Landing() {
       <section className="stats-bar">
         <div className="stats-inner">
           <div className="stat-item">
-            <span className="stat-value">{userCount}</span>
+            <span className="stat-value">{userCount + BASE_SIGNUP_COUNT}</span>
             <span className="stat-label">{t('landing.statsFreelancers')}</span>
           </div>
           <div className="stat-divider" />
