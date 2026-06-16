@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { path: '/admin/reports', label: 'Reports', icon: '🚨' },
   { path: '/admin/services', label: 'Services', icon: '🛠️' },
   { path: '/admin/jobs', label: 'Jobs', icon: '💼' },
+  { path: '/admin/courses', label: 'Courses', icon: '🎓' },
   { path: '/admin/settings', label: 'Settings', icon: '⚙️' },
 ]
 

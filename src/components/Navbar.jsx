@@ -90,6 +90,7 @@ export default function Navbar() {
     { to: '/talent', label: t('nav.browseTalent') },
     { to: '/jobs', label: t('nav.browseJobs') },
     { to: '/services', label: t('nav.browseServices') },
+    { to: '/courses', label: t('nav.courses') },
     { to: '/#how-it-works', label: t('nav.howItWorks'), hash: true },
   ]
 
@@ -197,6 +198,12 @@ export default function Navbar() {
                   <Link to="/settings" onClick={() => setDropdownOpen(false)}>
                     {t('nav.settings')}
                   </Link>
+                  <Link to="/services" onClick={() => setDropdownOpen(false)}>
+                    {t('nav.browseServices')}
+                  </Link>
+                  <Link to="/courses" onClick={() => setDropdownOpen(false)}>
+                    {t('nav.courses')}
+                  </Link>
                   <Link to="/verify" onClick={() => setDropdownOpen(false)} className="navbar-verify-link">
                     {t('nav.verification')}
                     {needsVerification && <span className="navbar-verify-dot-inline" />}
@@ -295,6 +302,10 @@ export default function Navbar() {
             <span className="navbar-mobile-link-icon">⚡</span>
             {t('nav.browseServices')}
           </Link>
+          <Link to="/courses" className="navbar-mobile-link" onClick={() => setMenuOpen(false)}>
+            <span className="navbar-mobile-link-icon">🎓</span>
+            Courses
+          </Link>
           <a href="/#how-it-works" className="navbar-mobile-link" onClick={() => setMenuOpen(false)}>
             <span className="navbar-mobile-link-icon">❓</span>
             {t('nav.howItWorks')}
@@ -336,6 +347,14 @@ export default function Navbar() {
             <Link to="/settings" className="navbar-mobile-link" onClick={() => setMenuOpen(false)}>
               <span className="navbar-mobile-link-icon">⚙️</span>
               {t('nav.settings')}
+            </Link>
+            <Link to="/services" className="navbar-mobile-link" onClick={() => setMenuOpen(false)}>
+              <span className="navbar-mobile-link-icon">🛠️</span>
+              {t('nav.browseServices')}
+            </Link>
+            <Link to="/courses" className="navbar-mobile-link" onClick={() => setMenuOpen(false)}>
+              <span className="navbar-mobile-link-icon">🎓</span>
+              {t('nav.courses')}
             </Link>
             <Link to="/verify" className="navbar-mobile-link" onClick={() => setMenuOpen(false)}>
               <span className="navbar-mobile-link-icon">✅</span>

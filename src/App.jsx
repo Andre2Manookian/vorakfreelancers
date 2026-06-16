@@ -94,6 +94,12 @@ const AdminServices = lazy(() =>
   import('./admin/AdminServices'))
 const AdminJobs = lazy(() =>
   import('./admin/AdminJobs'))
+const AdminCourses = lazy(() =>
+  import('./admin/AdminCourses'))
+const AdminLayout = lazy(() =>
+  import('./admin/AdminLayout'))
+const Courses = lazy(() =>
+  import('./pages/Courses'))
 
 const PageLoader = () => (
   <div style={{
@@ -184,6 +190,9 @@ export default function App() {
                   <Route path="/services/:id" element={
                     <SafePage><Navbar /><ServiceDetail /><Footer /></SafePage>
                   } />
+                  <Route path="/courses" element={
+                    <SafePage><Navbar /><Courses /><Footer /></SafePage>
+                  } />
                   <Route path="/about" element={
                     <SafePage><Navbar /><About /><Footer /></SafePage>
                   } />
@@ -248,65 +257,23 @@ export default function App() {
 
                   <Route path="/admin" element={
                     <AdminRoute>
-                      <SafePage><AdminDashboard /></SafePage>
+                      <SafePage><AdminLayout /></SafePage>
                     </AdminRoute>
-                  } />
-                  <Route path="/admin/users" element={
-                    <AdminRoute>
-                      <SafePage><AdminUsers /></SafePage>
-                    </AdminRoute>
-                  } />
-                  <Route path="/admin/contracts" element={
-                    <AdminRoute>
-                      <SafePage><AdminContracts /></SafePage>
-                    </AdminRoute>
-                  } />
-                  <Route path="/admin/payments" element={
-                    <AdminRoute>
-                      <SafePage><AdminPayments /></SafePage>
-                    </AdminRoute>
-                  } />
-                  <Route path="/admin/withdrawals" element={
-                    <AdminRoute>
-                      <SafePage><AdminWithdrawals /></SafePage>
-                    </AdminRoute>
-                  } />
-                  <Route path="/admin/verifications"
-                    element={
-                      <AdminRoute>
-                        <SafePage><AdminVerifications /></SafePage>
-                      </AdminRoute>
-                    } />
-                  <Route path="/admin/chats" element={
-                    <AdminRoute>
-                      <SafePage><AdminChats /></SafePage>
-                    </AdminRoute>
-                  } />
-                  <Route path="/admin/disputes" element={
-                    <AdminRoute>
-                      <SafePage><AdminDisputes /></SafePage>
-                    </AdminRoute>
-                  } />
-                  <Route path="/admin/reports" element={
-                    <AdminRoute>
-                      <SafePage><AdminReports /></SafePage>
-                    </AdminRoute>
-                  } />
-                  <Route path="/admin/settings" element={
-                    <AdminRoute>
-                      <SafePage><AdminSettings /></SafePage>
-                    </AdminRoute>
-                  } />
-                  <Route path="/admin/services" element={
-                    <AdminRoute>
-                      <SafePage><AdminServices /></SafePage>
-                    </AdminRoute>
-                  } />
-                  <Route path="/admin/jobs" element={
-                    <AdminRoute>
-                      <SafePage><AdminJobs /></SafePage>
-                    </AdminRoute>
-                  } />
+                  }>
+                    <Route index element={<AdminDashboard />} />
+                    <Route path="users" element={<AdminUsers />} />
+                    <Route path="contracts" element={<AdminContracts />} />
+                    <Route path="payments" element={<AdminPayments />} />
+                    <Route path="withdrawals" element={<AdminWithdrawals />} />
+                    <Route path="verifications" element={<AdminVerifications />} />
+                    <Route path="chats" element={<AdminChats />} />
+                    <Route path="disputes" element={<AdminDisputes />} />
+                    <Route path="reports" element={<AdminReports />} />
+                    <Route path="settings" element={<AdminSettings />} />
+                    <Route path="services" element={<AdminServices />} />
+                    <Route path="jobs" element={<AdminJobs />} />
+                    <Route path="courses" element={<AdminCourses />} />
+                  </Route>
 
                   <Route path="*" element={
                     <SafePage><Navbar /><NotFound /></SafePage>

@@ -72,6 +72,31 @@ CREATE TABLE IF NOT EXISTS public.services (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS public.courses (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  platform TEXT NOT NULL,
+  category TEXT NOT NULL,
+  affiliate_url TEXT,
+  cover_image_url TEXT,
+  description TEXT,
+  instructor_name TEXT,
+  current_price DECIMAL DEFAULT 0,
+  original_price DECIMAL DEFAULT 0,
+  rating DECIMAL DEFAULT 0,
+  students_count TEXT DEFAULT '0',
+  duration TEXT,
+  level TEXT DEFAULT 'All Levels',
+  is_featured BOOLEAN DEFAULT FALSE,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_courses_platform ON public.courses(platform);
+CREATE INDEX IF NOT EXISTS idx_courses_category ON public.courses(category);
+CREATE INDEX IF NOT EXISTS idx_courses_is_active ON public.courses(is_active);
+CREATE INDEX IF NOT EXISTS idx_courses_is_featured ON public.courses(is_featured);
+
 CREATE TABLE IF NOT EXISTS public.jobs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   employer_id UUID REFERENCES public.users(id) ON DELETE CASCADE,

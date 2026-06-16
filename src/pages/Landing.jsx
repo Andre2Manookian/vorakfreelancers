@@ -13,6 +13,7 @@ export default function Landing() {
   const [userCount, setUserCount] = useState(0)
   const [jobCount, setJobCount] = useState(0)
   const [categoryCounts, setCategoryCounts] = useState({})
+  const [featuredCourses, setFeaturedCourses] = useState([])
   const [activeTab, setActiveTab] = useState('employer')
   const [loaded, setLoaded] = useState(false)
 
@@ -54,6 +55,35 @@ export default function Landing() {
       }
     }
     fetchStats()
+    return () => { mounted = false }
+  }, [])
+
+  useEffect(() => {
+    let mounted = true
+
+    async function loadFeaturedCourses() {
+      try {
+        const { data, error } = await supabase
+          .from('courses')
+          .select('*')
+          .eq('is_active', true)
+          .eq('is_featured', true)
+          .order('created_at', { ascending: false })
+          .limit(4)
+
+        if (error) {
+          console.error('Featured courses fetch error:', error)
+          return
+        }
+
+        if (!mounted) return
+        setFeaturedCourses(data || [])
+      } catch (err) {
+        console.error('Featured courses load:', err)
+      }
+    }
+
+    loadFeaturedCourses()
     return () => { mounted = false }
   }, [])
 
@@ -134,6 +164,44 @@ export default function Landing() {
               <span className="category-count">{categoryCounts[cat.slug] || 0}</span>
             </Link>
           ))}
+        </div>
+      </section>
+
+      <section className="courses-preview-section">
+        <h2 className="section-title">Learn and Earn More</h2>
+        <p className="section-subtitle">Curated courses to grow your skills</p>
+        <div className="courses-preview-grid">
+          {featuredCourses.length > 0 ? featuredCourses.map((course) => (
+            <a
+              key={course.id}
+              href={course.affiliate_url}
+              target="_blank"
+              rel="noreferrer"
+              className="course-preview-card"
+            >
+              <div className="course-preview-media">
+                {course.cover_image_url ? (
+                  <img src={course.cover_image_url} alt={course.title} />
+                ) : (
+                  <div className="course-preview-placeholder">{course.platform || 'Course'}</div>
+                )}
+              </div>
+              <div className="course-preview-body">
+                <span className="course-preview-category">{course.category || 'General'}</span>
+                <h3>{course.title}</h3>
+                <p>{course.instructor_name || 'Instructor'}</p>
+                <div className="course-preview-meta">
+                  <span>{course.level}</span>
+                  {course.duration && <span>{course.duration}</span>}
+                </div>
+              </div>
+            </a>
+          )) : (
+            <div className="course-preview-empty">No featured courses at the moment.</div>
+          )}
+        </div>
+        <div className="courses-preview-actions">
+          <Link to="/courses" className="btn-primary btn-lg">View All Courses</Link>
         </div>
       </section>
 
