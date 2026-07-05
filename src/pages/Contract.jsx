@@ -14,12 +14,15 @@ import {
 import { createNotification } from '../lib/notifications'
 import LoadingSpinner from '../components/LoadingSpinner'
 import { uploadFile } from '../lib/cloudinary'
+import { useLanguage } from '../contexts/LanguageContext'
+import { createCryptoPayment } from '../lib/nowpayments'
 import './Contract.css'
 
 export default function Contract() {
   const { id } = useParams()
   const { currentUser } = useAuth()
   const { showToast } = useToast()
+  const { t } = useLanguage()
   const navigate = useNavigate()
 
   const [contract, setContract] = useState(null)
@@ -36,12 +39,105 @@ export default function Contract() {
   const [workFiles, setWorkFiles] = useState([])
   const [paypalReady, setPaypalReady] = useState(false)
   const [paypalError, setPaypalError] = useState('')
+  const [paymentMethod, setPaymentMethod] = useState('paypal')
+  const [cryptoData, setCryptoData] = useState(null)
+  const [cryptoLoading, setCryptoLoading] = useState(false)
+  const [cryptoError, setCryptoError] = useState('')
+  const [copied, setCopied] = useState(false)
+  const [manualSent, setManualSent] = useState(false)
+  const [countdown, setCountdown] = useState(20 * 60)
   const paypalRef = useRef(null)
 
   const chatEndRef = useRef(null)
 
   const isEmployer = currentUser?.id === contract?.employer_id
   const isTalent = currentUser?.id === contract?.talent_id
+
+  function formatTime(seconds) {
+    const m = Math.floor(seconds / 60)
+    const s = seconds % 60
+    return m + ':' + (s < 10 ? '0' : '') + s
+  }
+
+  async function handleGenerateCrypto() {
+    setCryptoLoading(true)
+    setCryptoError('')
+    try {
+      const payment = await createCryptoPayment({
+        amount: contract.amount,
+        orderId: contract.id,
+        orderDescription: 'Vorak Freelance: ' + contract.title,
+      })
+      setPaymentMethod('crypto')
+      setCryptoData(payment)
+    } catch (err) {
+      setCryptoError(
+        'Could not generate payment. Please try again or use PayPal.'
+      )
+    } finally {
+      setCryptoLoading(false)
+    }
+  }
+
+  async function handleCopy(text) {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2500)
+    } catch {
+      const el = document.createElement('textarea')
+      el.value = text
+      document.body.appendChild(el)
+      el.select()
+      document.execCommand('copy')
+      document.body.removeChild(el)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2500)
+    }
+  }
+
+  async function handleManualSent() {
+    setManualSent(true)
+    try {
+      await supabase
+        .from('contracts')
+        .update({
+          status: 'awaiting_confirmation',
+          payment_method: 'usdt_crypto',
+          payment_reference: cryptoData?.paymentId || 'CRYPTO-' + contract.id,
+          payment_confirmed: false,
+        })
+        .eq('id', contract.id)
+
+      await supabase
+        .from('notifications')
+        .insert([
+          {
+            user_id: contract.talent_id,
+            type: 'payment_pending',
+            title: '💰 Crypto Payment Submitted',
+            message: 'Client sent USDT payment. Admin will confirm soon.',
+            link: '/contracts/' + contract.id,
+          },
+          {
+            user_id: '4d25bf9c-9997-4531-b355-980ac2a0dbe0',
+            type: 'crypto_payment',
+            title: '₮ New USDT Payment',
+            message: '$' + Number(contract.amount).toFixed(2) + ' USDT payment for: ' + contract.title,
+            link: '/admin/contracts',
+          },
+        ])
+
+      alert(
+        '✅ Payment submitted!\n\nAdmin will verify and activate your contract within 1-2 hours.'
+      )
+      window.location.reload()
+    } catch (err) {
+      console.error('Submit error:', err)
+      setManualSent(false)
+      alert('Error: ' + err.message)
+    }
+  }
 
   const fetchData = useCallback(async () => {
     setLoading(true)
@@ -572,124 +668,446 @@ export default function Contract() {
           {contract?.status === 'pending_payment' &&
             currentUser?.id === contract?.employer_id && (
               <div style={{
-                background: 'var(--bg-card)',
-                border: '2px solid rgba(15,110,86,0.3)',
-                borderRadius: '16px',
-                padding: '28px',
                 marginBottom: '24px',
               }}>
-                <h3 style={{
-                  fontSize: '18px',
-                  fontWeight: '700',
-                  color: 'var(--text-primary)',
-                  marginBottom: '6px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                }}>
-                  💳 Complete Payment
-                </h3>
-                <p style={{
-                  fontSize: '13px',
-                  color: 'var(--text-secondary)',
-                  marginBottom: '20px',
-                }}>
-                  Money held securely until you
-                  approve the completed work
-                </p>
-
                 <div style={{
-                  background: 'var(--bg-secondary)',
-                  borderRadius: '10px',
-                  padding: '16px',
-                  marginBottom: '20px',
+                  background: 'var(--bg-card)',
+                  border: '2px solid rgba(15,110,86,0.4)',
+                  borderRadius: '16px',
+                  padding: '24px',
+                  marginBottom: '16px',
+                  position: 'relative',
                 }}>
                   <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    paddingBottom: '10px',
-                    marginBottom: '10px',
-                    borderBottom: '1px solid var(--border)',
+                    position: 'absolute',
+                    top: '-12px',
+                    left: '20px',
+                    background: '#0F6E56',
+                    color: 'white',
+                    fontSize: '11px',
+                    fontWeight: '800',
+                    padding: '4px 14px',
+                    borderRadius: '20px',
+                    letterSpacing: '0.5px',
+                    textTransform: 'uppercase',
                   }}>
-                    <span style={{
-                      fontSize: '13px',
-                      color: 'var(--text-secondary)',
-                    }}>
-                      {contract.title}
-                    </span>
+                    ⭐ {t('recommended') || 'Recommended'}
                   </div>
+
                   <div style={{
                     display: 'flex',
-                    justifyContent: 'space-between',
                     alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: '16px',
+                    marginTop: '4px',
                   }}>
-                    <span style={{
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      color: 'var(--text-primary)',
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
                     }}>
-                      Total
-                    </span>
-                    <span style={{
-                      fontSize: '26px',
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '50%',
+                        background: 'rgba(38,161,123,0.15)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '20px',
+                      }}>
+                        ₮
+                      </div>
+                      <div>
+                        <div style={{
+                          fontSize: '16px',
+                          fontWeight: '700',
+                          color: 'var(--text-primary)',
+                        }}>
+                          {t('cryptoPayment') || 'Pay with Crypto (USDT)'}
+                        </div>
+                        <div style={{
+                          fontSize: '12px',
+                          color: '#0F6E56',
+                          fontWeight: '500',
+                        }}>
+                          {t('cryptoWhy') || 'Instant · No bank fees · Global'}
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{
+                      fontSize: '20px',
                       fontWeight: '800',
                       color: '#0F6E56',
                     }}>
-                      ${Number(contract.amount || 0)
-                        .toFixed(2)}
-                    </span>
+                      ${Number(contract.amount || 0).toFixed(2)}
+                    </div>
                   </div>
+
+                  {!cryptoData && (
+                    <>
+                      {cryptoError && (
+                        <div style={{
+                          background: 'var(--error-bg)',
+                          border: '1px solid rgba(226,75,74,0.2)',
+                          borderRadius: '8px',
+                          padding: '10px 14px',
+                          color: 'var(--error)',
+                          fontSize: '13px',
+                          marginBottom: '14px',
+                        }}>
+                          ⚠️ {cryptoError}
+                        </div>
+                      )}
+                      <button
+                        onClick={handleGenerateCrypto}
+                        disabled={cryptoLoading}
+                        style={{
+                          width: '100%',
+                          padding: '14px',
+                          background: cryptoLoading ? 'var(--border)' : '#0F6E56',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '10px',
+                          fontSize: '15px',
+                          fontWeight: '700',
+                          cursor: cryptoLoading ? 'not-allowed' : 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          fontFamily: 'inherit',
+                          transition: 'all 0.2s',
+                        }}
+                      >
+                        {cryptoLoading ? (
+                          <>
+                            <div style={{
+                              width: '18px',
+                              height: '18px',
+                              border: '2px solid rgba(255,255,255,0.3)',
+                              borderTop: '2px solid white',
+                              borderRadius: '50%',
+                              animation: 'spin 0.8s linear infinite',
+                            }} />
+                            {t('generating') || 'Generating payment address...'}
+                          </>
+                        ) : (
+                          '₮ Pay by USDT'
+                        )}
+                      </button>
+                    </>
+                  )}
+
+                  {cryptoData && (
+                    <div>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        marginBottom: '16px',
+                        padding: '8px',
+                        background: countdown < 300 ? 'var(--error-bg)' : 'var(--warning-bg)',
+                        borderRadius: '8px',
+                      }}>
+                        <span style={{ fontSize: '16px' }}>⏱️</span>
+                        <span style={{
+                          fontSize: '13px',
+                          fontWeight: '600',
+                          color: countdown < 300 ? 'var(--error)' : 'var(--warning)',
+                        }}>
+                          {t('expiresIn') || 'Expires in'}: <strong>{formatTime(countdown)}</strong> {t('minutes') || 'min'}
+                        </span>
+                      </div>
+
+                      <div style={{
+                        background: 'var(--bg-secondary)',
+                        borderRadius: '10px',
+                        padding: '16px',
+                        marginBottom: '16px',
+                      }}>
+                        <div style={{
+                          fontSize: '12px',
+                          color: 'var(--text-tertiary)',
+                          marginBottom: '4px',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px',
+                          fontWeight: '600',
+                        }}>
+                          {t('sendExact') || 'Send Exact Amount'}
+                        </div>
+                        <div style={{
+                          fontSize: '28px',
+                          fontWeight: '900',
+                          color: '#0F6E56',
+                        }}>
+                          {cryptoData.payAmount} USDT
+                        </div>
+                        <div style={{
+                          fontSize: '12px',
+                          color: 'var(--text-tertiary)',
+                        }}>
+                          ≈ ${Number(contract.amount).toFixed(2)} USD
+                        </div>
+                      </div>
+
+                      <div style={{
+                        background: 'var(--bg-secondary)',
+                        borderRadius: '10px',
+                        padding: '16px',
+                        marginBottom: '16px',
+                      }}>
+                        <div style={{
+                          fontSize: '12px',
+                          color: 'var(--text-tertiary)',
+                          marginBottom: '8px',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px',
+                          fontWeight: '600',
+                        }}>
+                          {t('walletAddress') || 'Wallet Address'} (TRC20)
+                        </div>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px',
+                        }}>
+                          <div style={{
+                            flex: 1,
+                            fontFamily: 'monospace',
+                            fontSize: '12px',
+                            color: 'var(--text-primary)',
+                            wordBreak: 'break-all',
+                            background: 'var(--bg-card)',
+                            padding: '10px 12px',
+                            borderRadius: '8px',
+                            border: '1px solid var(--border)',
+                          }}>
+                            {cryptoData.payAddress}
+                          </div>
+                          <button
+                            onClick={() => handleCopy(cryptoData.payAddress)}
+                            style={{
+                              padding: '10px 16px',
+                              background: copied ? '#0F6E56' : 'var(--bg-card)',
+                              color: copied ? 'white' : 'var(--text-primary)',
+                              border: '1px solid var(--border)',
+                              borderRadius: '8px',
+                              cursor: 'pointer',
+                              fontSize: '13px',
+                              fontWeight: '600',
+                              flexShrink: 0,
+                              transition: 'all 0.2s',
+                              fontFamily: 'inherit',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {copied ? (t('copied') || '✓ Copied!') : (t('copyAddress') || 'Copy')}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div style={{
+                        textAlign: 'center',
+                        marginBottom: '16px',
+                      }}>
+                        <img
+                          src={'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(cryptoData.payAddress)}
+                          alt="USDT wallet QR code"
+                          style={{
+                            width: '160px',
+                            height: '160px',
+                            borderRadius: '12px',
+                            border: '4px solid white',
+                            boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+                          }}
+                        />
+                        <div style={{
+                          fontSize: '12px',
+                          color: 'var(--text-tertiary)',
+                          marginTop: '8px',
+                        }}>
+                          Scan with your crypto wallet
+                        </div>
+                      </div>
+
+                      <div style={{
+                        background: 'var(--warning-bg)',
+                        border: '1px solid rgba(239,159,39,0.25)',
+                        borderRadius: '8px',
+                        padding: '10px 14px',
+                        marginBottom: '16px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        fontSize: '13px',
+                        color: 'var(--warning)',
+                        fontWeight: '500',
+                      }}>
+                        ⚠️ {t('networkWarning') || 'Use TRC20 network only — other networks will fail'}
+                      </div>
+
+                      <button
+                        onClick={handleManualSent}
+                        disabled={manualSent}
+                        style={{
+                          width: '100%',
+                          padding: '14px',
+                          background: manualSent ? 'var(--success)' : '#0F6E56',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '10px',
+                          fontSize: '15px',
+                          fontWeight: '700',
+                          cursor: manualSent ? 'not-allowed' : 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          fontFamily: 'inherit',
+                        }}
+                      >
+                        {manualSent ? '✅ Payment Submitted!' : (t('iSentPayment') || '✓ I Have Sent Payment')}
+                      </button>
+                    </div>
+                  )}
                 </div>
 
-                {paypalError && (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  marginBottom: '16px',
+                }}>
                   <div style={{
-                    padding: '12px',
-                    background: 'var(--error-bg)',
-                    borderRadius: '8px',
-                    color: 'var(--error)',
+                    flex: 1,
+                    height: '1px',
+                    background: 'var(--border)',
+                  }} />
+                  <span style={{
                     fontSize: '13px',
-                    marginBottom: '16px',
-                    textAlign: 'center',
-                  }}>
-                    {paypalError}
-                  </div>
-                )}
-
-                <div
-                  id="paypal-button-container"
-                  style={{ minHeight: '50px' }}
-                />
-
-                {!paypalReady && !paypalError && (
-                  <div style={{
-                    textAlign: 'center',
-                    padding: '16px',
                     color: 'var(--text-tertiary)',
-                    fontSize: '13px',
+                    fontWeight: '500',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {t('orPayWith') || 'Or pay with PayPal'}
+                  </span>
+                  <div style={{
+                    flex: 1,
+                    height: '1px',
+                    background: 'var(--border)',
+                  }} />
+                </div>
+
+                <div style={{
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border)',
+                  borderRadius: '16px',
+                  padding: '24px',
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: '16px',
+                  }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                    }}>
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '50%',
+                        background: 'rgba(0,112,240,0.1)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '20px',
+                      }}>
+                        💳
+                      </div>
+                      <div>
+                        <div style={{
+                          fontSize: '16px',
+                          fontWeight: '700',
+                          color: 'var(--text-primary)',
+                        }}>
+                          PayPal / Credit Card
+                        </div>
+                        <div style={{
+                          fontSize: '12px',
+                          color: 'var(--text-secondary)',
+                        }}>
+                          Visa · Mastercard · Debit
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{
+                      fontSize: '20px',
+                      fontWeight: '800',
+                      color: 'var(--text-primary)',
+                    }}>
+                      ${Number(contract.amount || 0).toFixed(2)}
+                    </div>
+                  </div>
+
+                  {paypalError && (
+                    <div style={{
+                      padding: '12px',
+                      background: 'var(--error-bg)',
+                      borderRadius: '8px',
+                      color: 'var(--error)',
+                      fontSize: '13px',
+                      marginBottom: '16px',
+                      textAlign: 'center',
+                    }}>
+                      {paypalError}
+                    </div>
+                  )}
+
+                  <div
+                    id="paypal-button-container"
+                    style={{ minHeight: '55px' }}
+                  />
+
+                  {!paypalReady && !paypalError && (
+                    <div style={{
+                      textAlign: 'center',
+                      padding: '16px',
+                      color: 'var(--text-tertiary)',
+                      fontSize: '13px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                    }}>
+                      <div style={{
+                        width: '16px',
+                        height: '16px',
+                        border: '2px solid var(--border)',
+                        borderTop: '2px solid #0F6E56',
+                        borderRadius: '50%',
+                        animation: 'spin 0.8s linear infinite',
+                      }} />
+                      Loading PayPal...
+                    </div>
+                  )}
+
+                  <div style={{
+                    textAlign: 'center',
+                    marginTop: '12px',
+                    color: 'var(--text-tertiary)',
+                    fontSize: '12px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '8px',
+                    gap: '6px',
                   }}>
-                    <div style={{
-                      width: '16px',
-                      height: '16px',
-                      border: '2px solid var(--border)',
-                      borderTop: '2px solid #0F6E56',
-                      borderRadius: '50%',
-                      animation: 'spin 0.8s linear infinite',
-                    }} />
-                    Loading PayPal...
+                    🔒 Secured by PayPal
                   </div>
-                )}
-
-                <div style={{
-                  textAlign: 'center',
-                  marginTop: '12px',
-                  color: 'var(--text-tertiary)',
-                  fontSize: '12px',
-                }}>
-                  🔒 Visa · Mastercard · Debit cards · PayPal
                 </div>
               </div>
             )}
