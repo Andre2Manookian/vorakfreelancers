@@ -5,7 +5,8 @@ import { AuthProvider, useAuth } from
 import { LanguageProvider } from './contexts/LanguageContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { ToastProvider } from './components/Toast'
-import { Suspense, lazy } from 'react'
+import { Suspense, lazy, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ProtectedRoute from
@@ -134,9 +135,22 @@ function BanGate({ children }) {
   return children
 }
 
+function RouteTracker() {
+  const location = useLocation()
+
+  useEffect(() => {
+    import('./lib/codewords').then(({ trackEvent }) => {
+      trackEvent('page_view')
+    })
+  }, [location.pathname])
+
+  return null
+}
+
 export default function App() {
   return (
     <BrowserRouter>
+      <RouteTracker />
       <ThemeProvider>
         <LanguageProvider>
           <ToastProvider>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { trackEvent } from '../lib/codewords'
 
 export default function Signup() {
   const { signup } = useAuth()
@@ -65,6 +66,9 @@ export default function Signup() {
         fullName.trim(),
         role
       )
+      trackEvent(role === 'talent' ? 'freelancer_registration' : 'client_registration', {
+        role,
+      })
       navigate('/onboarding')
     } catch (err) {
       console.error('Signup error:', err)

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { trackEvent } from '../lib/codewords'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -40,6 +41,7 @@ export default function Login() {
       } else {
         window.location.href = '/dashboard'
       }
+      trackEvent('login', { role: profile?.role || 'unknown' })
 
     } catch (err) {
       console.error('Login failed:', err)

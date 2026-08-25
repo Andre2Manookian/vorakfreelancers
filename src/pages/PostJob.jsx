@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { CATEGORIES } from '../lib/helpers'
+import { trackEvent } from '../lib/codewords'
 import JobCard from '../components/JobCard'
 import './PostJob.css'
 
@@ -70,6 +71,8 @@ export default function PostJob() {
       }).select().single()
 
       if (error) throw error
+
+      if (status === 'open') trackEvent('project_created', { category, status })
       
       alert(status === 'draft' ? 'Job saved as draft!' : 'Job published successfully!')
       navigate(`/jobs/${data.id}`)

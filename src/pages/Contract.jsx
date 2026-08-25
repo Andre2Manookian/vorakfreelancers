@@ -16,6 +16,7 @@ import LoadingSpinner from '../components/LoadingSpinner'
 import { uploadFile } from '../lib/cloudinary'
 import { useLanguage } from '../contexts/LanguageContext'
 import { createCryptoPayment } from '../lib/nowpayments'
+import { trackEvent } from '../lib/codewords'
 import './Contract.css'
 
 export default function Contract() {
@@ -249,6 +250,8 @@ export default function Contract() {
                 })
                 .eq('id', contract.id)
 
+              trackEvent('payment_completed', { payment_method: 'paypal' })
+
               await supabase
                 .from('notifications')
                 .insert({
@@ -429,6 +432,8 @@ export default function Contract() {
         'Client has submitted payment reference for confirmation.',
         `/contracts/${id}`
       )
+
+      trackEvent('project_completed', { contract_type: contract.type || 'project' })
 
       showToast('Payment submitted for confirmation')
     } catch (error) {

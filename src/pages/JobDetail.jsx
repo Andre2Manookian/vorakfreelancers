@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import { formatCurrency, formatDate, formatRelativeTime, getInitials } from '../lib/helpers'
+import { trackEvent } from '../lib/codewords'
 import LoadingSpinner from '../components/LoadingSpinner'
 import './JobDetail.css'
 
@@ -97,6 +98,8 @@ export default function JobDetail() {
 
       // Update job proposal count
       await supabase.rpc('increment_proposals_count', { job_id: id })
+
+      trackEvent('proposal_submitted', { delivery_days: parseInt(deliveryDays) })
 
       setMyProposal(data)
       alert('Proposal submitted successfully!')

@@ -1,6 +1,4 @@
-const API_KEY = import.meta.env.VITE_NOWPAYMENTS_API_KEY
 const WALLET_ADDRESS = import.meta.env.VITE_USDT_WALLET
-const BASE_URL = 'https://api.nowpayments.io/v1'
 
 function toDisplayAmount(amount) {
   const numeric = Number(amount || 0)
@@ -12,35 +10,16 @@ export async function createCryptoPayment({
   orderId,
   orderDescription,
 }) {
-  if (!API_KEY) {
-    return {
-      paymentId: `CRYPTO-${orderId}`,
-      payAddress: WALLET_ADDRESS,
-      payAmount: toDisplayAmount(amount),
-      payCurrency: 'usdttrc20',
-      expirationEstimate: null,
-      fallback: true,
-    }
-  }
-
   try {
-    const response = await fetch(
-      BASE_URL + '/payment',
-      {
+    const response = await fetch('/api/payments/crypto', {
         method: 'POST',
-        headers: {
-          'x-api-key': API_KEY,
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          pay_currency: 'usdttrc20',
-          price_amount: toDisplayAmount(amount),
-          price_currency: 'usd',
-          order_id: orderId,
-          order_description: orderDescription,
+          amount: toDisplayAmount(amount),
+          orderId,
+          orderDescription,
         }),
-      }
-    )
+      })
 
     if (!response.ok) {
       throw new Error('NOWPayments unavailable')
@@ -55,7 +34,7 @@ export async function createCryptoPayment({
       expirationEstimate: data.expiration_estimate_date,
       fallback: false,
     }
-  } catch (error) {
+  } catch {
     return {
       paymentId: `CRYPTO-${orderId}`,
       payAddress: WALLET_ADDRESS,
@@ -68,16 +47,12 @@ export async function createCryptoPayment({
 }
 
 export async function checkPaymentStatus(paymentId) {
+  if (!paymentId) return null
   try {
-    const response = await fetch(
-      BASE_URL + '/payment/' + paymentId,
-      {
-        headers: { 'x-api-key': API_KEY },
-      }
-    )
+    const response = await fetch('/api/payments/crypto/' + encodeURIComponent(paymentId))
     const data = await response.json()
     return data.payment_status
-  } catch (error) {
+  } catch {
     return null
   }
 }

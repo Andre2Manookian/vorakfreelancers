@@ -1,4 +1,3 @@
-const RESEND_API_KEY = import.meta.env.VITE_RESEND_API_KEY
 const FROM_EMAIL = 'Vorak Freelance <vorakfreelance@gmail.com>'
 const PLATFORM_URL = import.meta.env.VITE_PLATFORM_URL || 'https://vorakfreelance.com'
 
@@ -33,14 +32,12 @@ function buttonHtml(text, href) {
 }
 
 export async function sendEmail({ to, subject, html }) {
-  const response = await fetch('https://api.resend.com/emails', {
+  const response = await fetch('/api/email', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${RESEND_API_KEY}`,
     },
     body: JSON.stringify({
-      from: FROM_EMAIL,
       to: Array.isArray(to) ? to : [to],
       subject,
       html: emailWrapper(html),
@@ -71,14 +68,12 @@ export async function sendWelcomeEmail({ email, name, role }) {
       <p style="color:#555550;margin-top:24px;font-size:14px;">Follow us: <a href="https://www.instagram.com/vorakfreelancers/" style="color:#0F6E56;">Instagram</a> · <a href="https://www.tiktok.com/@vorak.freelancers" style="color:#0F6E56;">TikTok</a></p>
     `
 
-  const response = await fetch('https://api.resend.com/emails', {
+  const response = await fetch('/api/email', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${RESEND_API_KEY}`,
     },
     body: JSON.stringify({
-      from: 'Vorak Freelance <hello@vorakfreelance.com>',
       to: [email],
       subject: 'Welcome to Vorak Freelance',
       html: emailWrapper(html),
@@ -94,8 +89,7 @@ export async function sendWelcomeEmail({ email, name, role }) {
 }
 
 export async function sendAdminAlert({ subject, html }) {
-  const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
-  return sendEmail({ to: adminEmail, subject, html })
+  return sendEmail({ to: [], subject, html })
 }
 
 export { buttonHtml, emailWrapper, FROM_EMAIL, PLATFORM_URL }
