@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import { uploadFile } from '../lib/cloudinary'
-import { LANGUAGES_FILTER } from '../lib/helpers'
+import { LANGUAGES_FILTER, DEFAULT_AVATAR } from '../lib/helpers'
 import LoadingSpinner from '../components/LoadingSpinner'
 import './Onboarding.css'
 
@@ -39,6 +39,7 @@ export default function Onboarding() {
   const [skills, setSkills] = useState([])
   const [skillInput, setSkillInput] = useState('')
   const [languages, setLanguages] = useState([])
+  const [customLanguageInput, setCustomLanguageInput] = useState('')
   const [hourlyRate, setHourlyRate] = useState('')
   const [tagline, setTagline] = useState('')
 
@@ -80,6 +81,20 @@ export default function Onboarding() {
     setLanguages((prev) =>
       prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang]
     )
+  }
+
+  const addCustomLanguage = () => {
+    const value = customLanguageInput.trim()
+    if (!value) return
+
+    const cleaned = value.replace(/\s+/g, ' ')
+    const normalized = cleaned.charAt(0).toUpperCase() + cleaned.slice(1)
+
+    setLanguages((prev) => {
+      const exists = prev.some((language) => language.toLowerCase() === normalized.toLowerCase())
+      return exists ? prev : [...prev, normalized]
+    })
+    setCustomLanguageInput('')
   }
 
   const saveTalentProfile = async () => {
@@ -184,9 +199,7 @@ export default function Onboarding() {
             {avatarUrl ? (
               <img src={avatarUrl} alt="Profile" />
             ) : (
-              <span className="avatar-upload-placeholder">
-                Click to upload<br />JPG or PNG
-              </span>
+              <img src={DEFAULT_AVATAR} alt="Default profile" className="avatar-upload-default" />
             )}
           </div>
         </div>
@@ -268,18 +281,46 @@ export default function Onboarding() {
             </div>
             <div className="auth-field">
               <label className="auth-label">Languages</label>
-              <div className="lang-checkboxes">
+              <div className="lang-select-grid">
                 {LANGUAGES_FILTER.map((lang) => (
-                  <label key={lang}>
+                  <label key={lang} className={`lang-option ${languages.includes(lang) ? 'selected' : ''}`}>
                     <input
                       type="checkbox"
                       checked={languages.includes(lang)}
                       onChange={() => toggleLanguage(lang)}
                     />
-                    {lang}
+                    <span>{lang}</span>
+                    <span className="lang-checkmark">✓</span>
                   </label>
                 ))}
               </div>
+
+              <div className="language-add-row">
+                <input
+                  className="input"
+                  value={customLanguageInput}
+                  onChange={(e) => setCustomLanguageInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      addCustomLanguage()
+                    }
+                  }}
+                  placeholder="Add another language"
+                />
+                <button type="button" className="btn-outline" onClick={addCustomLanguage}>Add</button>
+              </div>
+
+              {languages.filter((lang) => !LANGUAGES_FILTER.includes(lang)).length > 0 && (
+                <div className="selected-language-pills">
+                  {languages.filter((lang) => !LANGUAGES_FILTER.includes(lang)).map((lang) => (
+                    <span key={lang} className="skill-pill">
+                      {lang}
+                      <button type="button" onClick={() => setLanguages((prev) => prev.filter((item) => item !== lang))}>×</button>
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="auth-field">
               <label className="auth-label">Hourly rate</label>

@@ -365,19 +365,16 @@ export default function BrowseJobs() {
                   {
                     icon: '🏢',
                     title: t('browseJobs.fullTime'),
-                    en: 'Full-time',
                     desc: t('browseJobs.fullTimeDesc'),
                   },
                   {
                     icon: '⏰',
                     title: t('browseJobs.partTime'),
-                    en: 'Part-time',
                     desc: t('browseJobs.partTimeDesc'),
                   },
                   {
                     icon: '🎓',
                     title: t('browseJobs.internship'),
-                    en: 'Internship',
                     desc: t('browseJobs.internshipDesc'),
                   },
                 ].map(item => (
@@ -385,7 +382,6 @@ export default function BrowseJobs() {
                     <div className="cs-card-badge">{t('browseJobs.comingSoon')}</div>
                     <div className="cs-icon">{item.icon}</div>
                     <p className="cs-card-title">{item.title}</p>
-                    <p className="cs-card-en">{item.en}</p>
                     <p className="cs-card-desc">{item.desc}</p>
                   </div>
                 ))}

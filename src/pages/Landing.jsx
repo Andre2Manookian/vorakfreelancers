@@ -67,7 +67,6 @@ export default function Landing() {
           .from('courses')
           .select('*')
           .eq('is_active', true)
-          .eq('is_featured', true)
           .order('created_at', { ascending: false })
           .limit(4)
 
@@ -168,8 +167,8 @@ export default function Landing() {
       </section>
 
       <section className="courses-preview-section">
-        <h2 className="section-title">Learn and Earn More</h2>
-        <p className="section-subtitle">Curated courses to grow your skills</p>
+        <h2 className="section-title">{t('landing.learnAndEarnTitle')}</h2>
+        <p className="section-subtitle">{t('landing.learnAndEarnSubtitle')}</p>
         <div className="courses-preview-grid">
           {featuredCourses.length > 0 ? featuredCourses.map((course) => (
             <a
@@ -183,13 +182,13 @@ export default function Landing() {
                 {course.cover_image_url ? (
                   <img src={course.cover_image_url} alt={course.title} />
                 ) : (
-                  <div className="course-preview-placeholder">{course.platform || 'Course'}</div>
+                  <div className="course-preview-placeholder">{course.platform || t('landing.course')}</div>
                 )}
               </div>
               <div className="course-preview-body">
-                <span className="course-preview-category">{course.category || 'General'}</span>
+                <span className="course-preview-category">{course.category || t('landing.general')}</span>
                 <h3>{course.title}</h3>
-                <p>{course.instructor_name || 'Instructor'}</p>
+                <p>{course.instructor_name || t('landing.instructor')}</p>
                 <div className="course-preview-meta">
                   <span>{course.level}</span>
                   {course.duration && <span>{course.duration}</span>}
@@ -197,11 +196,11 @@ export default function Landing() {
               </div>
             </a>
           )) : (
-            <div className="course-preview-empty">No featured courses at the moment.</div>
+            <div className="course-preview-empty">{t('landing.noFeaturedCourses')}</div>
           )}
         </div>
         <div className="courses-preview-actions">
-          <Link to="/courses" className="btn-primary btn-lg">View All Courses</Link>
+          <Link to="/courses" className="btn-primary btn-lg">{t('landing.viewAllCourses')}</Link>
         </div>
       </section>
 

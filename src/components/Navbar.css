@@ -223,6 +223,7 @@
 
   .navbar-right {
     gap: 8px;
+    min-width: 0;
   }
 
   .navbar-mobile {
@@ -415,12 +416,25 @@
 
 @media (max-width: 480px) {
   .navbar-logo {
-    font-size: 11px;
-    letter-spacing: 2px;
+    font-size: 10px;
+    letter-spacing: 1.6px;
+    max-width: 120px;
   }
 
   .navbar-inner {
-    padding: 0 16px;
+    padding: 0 12px;
+    gap: 8px;
+  }
+
+  .navbar-avatar-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .navbar-mobile {
+    width: 100vw;
+    max-width: 100vw;
+    padding: 72px 16px 20px;
   }
 }
 

@@ -282,10 +282,28 @@
 .checkbox-label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-size: 14px;
   color: var(--text-primary);
   cursor: pointer;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-primary);
+  transition: all 0.2s ease;
+}
+
+.checkbox-label:hover {
+  border-color: var(--border-hover);
+  background: rgba(15, 110, 86, 0.03);
+}
+
+.checkbox-label input {
+  accent-color: var(--color-teal);
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex-shrink: 0;
 }
 
 /* ── Availability toggle btn ── */
@@ -485,11 +503,16 @@
   }
 
   .settings-nav button {
-    flex: none;
+    flex: 1 1 140px;
   }
 
   .settings-hero {
     padding: 90px 16px 24px;
+  }
+
+  .settings-hero-inner {
+    flex-wrap: wrap;
+    align-items: flex-start;
   }
 
   .settings-content {
@@ -508,5 +531,27 @@
   .delete-actions {
     min-width: unset;
     width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .avatar-upload {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px;
+  }
+
+  .checkbox-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .notif-item {
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 0;
+  }
+
+  .settings-content {
+    padding: 20px 16px;
   }
 }

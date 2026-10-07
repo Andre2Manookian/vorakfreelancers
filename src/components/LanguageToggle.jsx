@@ -7,16 +7,17 @@ const LANGS = [
   { code: 'en', label: 'EN' },
 ]
 
-export default function LanguageToggle() {
+export default function LanguageToggle({ className = '', compact = false }) {
   const { lang, setLang } = useLanguage()
+  const rootClassName = [styles.toggle, compact ? styles.compact : '', className].filter(Boolean).join(' ')
 
   return (
-    <div className={styles.toggle} role="group" aria-label="Language">
+    <div className={rootClassName} role="group" aria-label="Language">
       {LANGS.map(({ code, label }) => (
         <button
           key={code}
           type="button"
-          className={`${styles.btn} ${lang === code ? styles.active : ''}`}
+          className={`${styles.btn} ${compact ? styles.compactBtn : ''} ${lang === code ? styles.active : ''}`}
           onClick={() => setLang(code)}
           aria-pressed={lang === code}
         >

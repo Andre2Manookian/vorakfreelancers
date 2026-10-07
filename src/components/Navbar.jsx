@@ -3,11 +3,12 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useLanguage } from '../contexts/LanguageContext'
 import { supabase } from '../lib/supabase'
+import { DEFAULT_AVATAR } from '../lib/helpers'
 import NotificationBell from './NotificationBell'
 import './Navbar.css'
 import LanguageToggle from './LanguageToggle'
 import ThemeToggle from './ThemeToggle'
-import './Navbar.css'
+import languageToggleStyles from './LanguageToggle.module.css'
 
 export default function Navbar() {
   const { currentUser, userProfile, logout, isAdmin } = useAuth()
@@ -17,6 +18,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [unreadCount, setUnreadCount] = useState(0)
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth <= 900 : false)
   const dropdownRef = useRef(null)
 
   const [theme, setTheme] = useState(
@@ -43,6 +45,13 @@ export default function Navbar() {
     }
     document.addEventListener('click', handleClick)
     return () => document.removeEventListener('click', handleClick)
+  }, [])
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 900)
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   useEffect(() => {
@@ -126,7 +135,7 @@ export default function Navbar() {
               textDecoration: 'none',
               transition: 'all 0.2s',
             }}>
-              + Post Service
+              {t('nav.postService')}
             </Link>
           )}
           {userProfile?.role === 'employer' && (
@@ -140,7 +149,7 @@ export default function Navbar() {
               textDecoration: 'none',
               transition: 'all 0.2s',
             }}>
-              + Post Job
+              {t('nav.postJob')}
             </Link>
           )}
         </div>
@@ -160,11 +169,11 @@ export default function Navbar() {
               fontSize: '16px',
               transition: 'all 0.2s',
             }}
-            title="Toggle theme"
+            title={t('theme.toggleLabel')}
           >
             {theme === 'dark' ? '☀️' : '🌙'}
           </button>
-          <LanguageToggle />
+          {!isMobile && <LanguageToggle />}
 
           {currentUser && <NotificationBell />}
 
@@ -179,11 +188,9 @@ export default function Navbar() {
                 {userProfile?.avatar_url ? (
                   <img src={userProfile.avatar_url} alt="" className="navbar-avatar" />
                 ) : (
-                  <span className="navbar-avatar-placeholder">
-                    {userProfile?.full_name?.[0] || '?'}
-                  </span>
+                  <img src={DEFAULT_AVATAR} alt="Default profile" className="navbar-avatar" />
                 )}
-                {needsVerification && <span className="navbar-verify-dot" title="Verify identity" />}
+                {needsVerification && <span className="navbar-verify-dot" title={t('nav.verification')} />}
               </button>
 
               {dropdownOpen && (
@@ -230,7 +237,7 @@ export default function Navbar() {
             type="button"
             className="navbar-hamburger"
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Menu"
+            aria-label={t('nav.menu')}
           >
             <span /><span /><span />
           </button>
@@ -248,6 +255,11 @@ export default function Navbar() {
           >
             ✕
           </button>
+        </div>
+
+        <div className="navbar-mobile-section" style={{ marginBottom: '12px' }}>
+          <p className="navbar-mobile-section-title">Language</p>
+          <LanguageToggle compact className={languageToggleStyles.mobileToggle} />
         </div>
 
         {/* Auth Buttons at Top for Guests */}
@@ -268,16 +280,7 @@ export default function Navbar() {
             {userProfile?.avatar_url ? (
               <img src={userProfile.avatar_url} alt="" className="navbar-mobile-user-avatar" />
             ) : (
-              <div className="navbar-mobile-user-avatar" style={{
-                background: 'var(--bg-card)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 600,
-                color: 'var(--accent)'
-              }}>
-                {userProfile?.full_name?.[0] || '?'}
-              </div>
+              <img src={DEFAULT_AVATAR} alt="Default profile" className="navbar-mobile-user-avatar" />
             )}
             <div className="navbar-mobile-user-info">
               <div className="navbar-mobile-user-name">{userProfile?.full_name || 'User'}</div>

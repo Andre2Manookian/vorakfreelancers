@@ -14,6 +14,9 @@ const TRACKING_EVENTS = new Set([
 export function trackEvent(event, properties = {}) {
   if (!TRACKING_WEBHOOK_URL || !TRACKING_EVENTS.has(event)) return
 
+  const host = window.location.hostname
+  if (host === 'localhost' || host === '127.0.0.1' || host === '0.0.0.0') return
+
   const safeProperties = Object.fromEntries(
     Object.entries(properties).filter(([, value]) => (
       typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'
@@ -44,7 +47,8 @@ export function trackEvent(event, properties = {}) {
     headers: { 'Content-Type': 'application/json' },
     body: payload,
     keepalive: true,
-  }).catch(() => {})
+    credentials: 'omit',
+  }).catch(() => { })
 }
 
 export { TRACKING_EVENTS }

@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 import VerifiedBadge from '../components/VerifiedBadge'
 import { useToast } from '../components/Toast'
 import { uploadFile } from '../lib/cloudinary'
-import { CATEGORIES, LANGUAGES_FILTER } from '../lib/helpers'
+import { CATEGORIES, LANGUAGES_FILTER, DEFAULT_AVATAR } from '../lib/helpers'
 import { useLanguage } from '../contexts/LanguageContext'
 import './Settings.css'
 
@@ -148,10 +148,10 @@ export default function Settings() {
       }
 
       await fetchProfile(currentUser.id)
-      showToast('Profile updated successfully')
+      showToast(t('settings.profileSaved'))
     } catch (error) {
       console.error('Error updating profile:', error)
-      showToast('Failed to update profile', 'error')
+      showToast(t('settings.profileSaveFailed'), 'error')
     } finally {
       setLoading(false)
     }
@@ -171,9 +171,9 @@ export default function Settings() {
         .eq('user_id', currentUser.id)
 
       if (error) throw error
-      showToast('Payment details saved')
+      showToast(t('settings.paymentSaved'))
     } catch (error) {
-      showToast('Failed to save payment details', 'error')
+      showToast(t('settings.paymentSaveFailed'), 'error')
     } finally {
       setLoading(false)
     }
@@ -182,14 +182,14 @@ export default function Settings() {
   const handleChangePassword = async (e) => {
     e.preventDefault()
     if (newPassword !== confirmPassword) {
-      showToast('Passwords do not match', 'error')
+      showToast(t('settings.passwordsDoNotMatch'), 'error')
       return
     }
     setLoading(true)
     try {
       const { error } = await supabase.auth.updateUser({ password: newPassword })
       if (error) throw error
-      showToast('Password updated')
+      showToast(t('settings.passwordUpdated'))
       setNewPassword('')
       setConfirmPassword('')
     } catch (error) {
@@ -202,7 +202,7 @@ export default function Settings() {
   const handleDeleteAccount = async () => {
     if (deleteConfirm !== 'DELETE') return
     // Account deletion logic
-    alert('Account deletion requested.')
+    alert(t('settings.deleteRequested'))
   }
 
   const handleSaveNotifications = async () => {
@@ -213,9 +213,9 @@ export default function Settings() {
         .update({ notification_settings: notifPrefs })
         .eq('id', currentUser.id)
       if (error) throw error
-      showToast('Notification preferences saved')
+      showToast(t('settings.notificationsSaved'))
     } catch (error) {
-      showToast('Failed to save preferences', 'error')
+      showToast(t('settings.notificationsSaveFailed'), 'error')
     } finally {
       setLoading(false)
     }
@@ -233,9 +233,9 @@ export default function Settings() {
         .eq('id', currentUser.id)
       if (error) throw error
       await fetchProfile(currentUser.id)
-      showToast('Avatar updated')
+      showToast(t('settings.avatarUpdated'))
     } catch (error) {
-      showToast('Failed to update avatar', 'error')
+      showToast(t('settings.avatarUpdateFailed'), 'error')
     } finally {
       setLoading(false)
     }
@@ -258,9 +258,9 @@ export default function Settings() {
         .eq('id', currentUser.id)
 
       if (error) throw error
-      showToast('Verification request submitted')
+      showToast(t('settings.verificationSubmitted'))
     } catch (error) {
-      showToast('Failed to submit verification', 'error')
+      showToast(t('settings.verificationSubmitFailed'), 'error')
     } finally {
       setLoading(false)
     }
@@ -269,7 +269,7 @@ export default function Settings() {
   async function uploadPortfolioImage(file) {
     if (!file) return
     if (portfolioItems.length >= 10) {
-      showToast('Maximum 10 portfolio items allowed', 'error')
+      showToast(t('settings.maxPortfolioReached'), 'error')
       return
     }
     setPortfolioUploading(true)
@@ -281,9 +281,9 @@ export default function Settings() {
         .from('talent_profiles')
         .update({ portfolio_items: updated })
         .eq('user_id', currentUser.id)
-      showToast('Photo added to portfolio')
+      showToast(t('settings.portfolioAdded'))
     } catch {
-      showToast('Upload failed', 'error')
+      showToast(t('settings.uploadFailed'), 'error')
     } finally {
       setPortfolioUploading(false)
     }
@@ -296,7 +296,7 @@ export default function Settings() {
       .from('talent_profiles')
       .update({ portfolio_items: updated })
       .eq('user_id', currentUser.id)
-    showToast('Photo removed')
+    showToast(t('settings.portfolioRemoved'))
   }
 
   async function saveContactInfo() {
@@ -306,9 +306,9 @@ export default function Settings() {
         .update({ contact_email: contactEmail.trim(), contact_telegram: contactTelegram.trim() })
         .eq('id', currentUser.id)
       await fetchProfile(currentUser.id)
-      showToast('Contact info saved')
+      showToast(t('settings.contactInfoSaved'))
     } catch {
-      showToast('Failed to save contact info', 'error')
+      showToast(t('settings.contactInfoSaveFailed'), 'error')
     } finally {
       setShowContactWarning(false)
     }
@@ -370,10 +370,10 @@ export default function Settings() {
           <div className="settings-hero-avatar">
             {currentUser?.avatar_url
               ? <img src={currentUser.avatar_url} alt="" />
-              : (fullName?.[0] || '?')}
+              : <img src={DEFAULT_AVATAR} alt="Default profile" />}
           </div>
           <div>
-            <h1>{fullName || 'Your Account'}</h1>
+            <h1>{fullName || t('settings.accountTitle')}</h1>
             <p>{currentUser?.email}</p>
           </div>
         </div>
@@ -410,7 +410,7 @@ export default function Settings() {
                 <div className="avatar-preview">
                   {currentUser.avatar_url
                     ? <img src={currentUser.avatar_url} alt="" />
-                    : <div className="avatar-placeholder">{fullName?.[0]}</div>}
+                    : <img src={DEFAULT_AVATAR} alt="Default profile" className="avatar-preview-default" />}
                 </div>
                 <div>
                   <div style={{ fontWeight: '700', fontSize: '15px', color: 'var(--text-primary)', marginBottom: '4px' }}>{fullName}</div>
@@ -759,7 +759,7 @@ export default function Settings() {
                       fontSize: '13px',
                       color: 'var(--text-secondary)',
                     }}>
-                      We are reviewing your documents. Usually takes 24 hours.
+                      {t('settings.verificationReviewing')}
                     </div>
                     <button
                       onClick={refreshProfile}
@@ -819,7 +819,7 @@ export default function Settings() {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
           <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(245,158,11,0.4)', borderRadius: '20px', padding: '36px', maxWidth: '520px', width: '100%' }}>
             <div style={{ fontSize: '32px', textAlign: 'center', marginBottom: '16px' }}>⚠️</div>
-            <h3 style={{ textAlign: 'center', fontWeight: '800', fontSize: '18px', marginBottom: '20px', color: '#f59e0b' }}>Important Notice / Կարևոր Ծանուցում</h3>
+            <h3 style={{ textAlign: 'center', fontWeight: '800', fontSize: '18px', marginBottom: '20px', color: '#f59e0b' }}>{t('settings.importantNotice')} / {t('settings.importantNoticeAm')}</h3>
 
             <div style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.25)', borderRadius: '12px', padding: '16px', marginBottom: '16px', fontSize: '14px', lineHeight: '1.8' }}>
               <p style={{ marginBottom: '14px' }}>
@@ -837,11 +837,11 @@ export default function Settings() {
               <button
                 onClick={() => setShowContactWarning(false)}
                 style={{ flex: 1, padding: '12px', background: 'transparent', border: '1px solid var(--border)', borderRadius: '10px', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '14px' }}
-              >Cancel</button>
+              >{t('settings.cancel')}</button>
               <button
                 onClick={async () => { setShowContactWarning(false); await saveProfile() }}
                 style={{ flex: 1, padding: '12px', background: '#0F6E56', border: 'none', borderRadius: '10px', color: '#fff', cursor: 'pointer', fontSize: '14px', fontWeight: '700' }}
-              >I Understand — Save</button>
+              >{t('settings.iUnderstand')}</button>
             </div>
           </div>
         </div>

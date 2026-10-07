@@ -141,6 +141,25 @@
   font-size: 14px;
   color: var(--text-primary) !important;
   cursor: pointer;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: var(--bg-primary);
+  transition: all 0.2s ease;
+}
+
+.checkbox-label:hover {
+  border-color: var(--border-hover);
+  background: rgba(15, 110, 86, 0.03);
+}
+
+.checkbox-label input[type="checkbox"],
+.toggle-label input[type="checkbox"] {
+  accent-color: var(--color-teal);
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex-shrink: 0;
 }
 
 .toggle-label {
@@ -148,6 +167,10 @@
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-primary);
 }
 
 .full-width {
@@ -288,10 +311,22 @@
 @media (max-width: 640px) {
   .filters-sidebar {
     grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .filter-group {
+    gap: 6px;
   }
 
   .results-grid {
     grid-template-columns: 1fr;
+  }
+
+  .results-header {
+    gap: 12px;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .bt-hero {
@@ -300,5 +335,25 @@
 
   .bt-body {
     padding: 24px 16px 60px;
+  }
+}
+
+@media (max-width: 420px) {
+
+  .filter-group select,
+  .filter-group input[type="number"],
+  .filter-group input[type="text"],
+  .search-input {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .price-inputs {
+    grid-template-columns: 1fr;
+  }
+
+  .checkbox-label,
+  .toggle-label {
+    padding: 10px 12px;
   }
 }

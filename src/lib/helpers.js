@@ -1,7 +1,10 @@
-export const COMMISSION_RATE = 0.08
+import defaultAvatar from '../assets/default-avatar.svg'
 
-export function safeNumber(val) { 
-  return isNaN(val) || val === null || val === undefined ? 0 : Number(val) 
+export const COMMISSION_RATE = 0.08
+export const DEFAULT_AVATAR = defaultAvatar
+
+export function safeNumber(val) {
+  return isNaN(val) || val === null || val === undefined ? 0 : Number(val)
 }
 
 export const CATEGORIES = [

@@ -73,7 +73,7 @@ export default function Signup() {
     } catch (err) {
       console.error('Signup error:', err)
       const errorMsg = err.message || ''
-      
+
       if (errorMsg.includes('already')) {
         setError('Email already registered. Please login.')
       } else if (errorMsg.includes('rate limit') || errorMsg.includes('email rate')) {
@@ -185,7 +185,7 @@ export default function Signup() {
                 value={fullName}
                 onChange={e =>
                   setFullName(e.target.value)}
-                placeholder="Andre Manookian"
+                placeholder="Name"
                 style={inputStyle}
               />
             </div>

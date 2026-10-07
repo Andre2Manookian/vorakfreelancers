@@ -179,7 +179,7 @@ export default function BrowseTalent() {
             <div className="filter-group">
               <label>{t('browseTalent.categoryLabel')}</label>
               <select value={category} onChange={(e) => setCategory(e.target.value)}>
-                <option value="All">{t('browseTalent.categoryLabel')} - All</option>
+                <option value="All">{t('browseTalent.categoryLabel')} - {t('browseTalent.all')}</option>
                 {CATEGORIES.map(cat => (
                   <option key={cat.slug} value={cat.name}>{cat.name}</option>
                 ))}
@@ -189,8 +189,8 @@ export default function BrowseTalent() {
             <div className="filter-group">
               <label>{t('browseTalent.hourlyRateLabel')}</label>
               <div className="price-inputs">
-                <input type="number" placeholder="Min" value={minPrice} onChange={(e) => setMinPrice(e.target.value)} />
-                <input type="number" placeholder="Max" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} />
+                <input type="number" placeholder={t('browseTalent.min')} value={minPrice} onChange={(e) => setMinPrice(e.target.value)} />
+                <input type="number" placeholder={t('browseTalent.max')} value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} />
               </div>
             </div>
 
@@ -198,7 +198,7 @@ export default function BrowseTalent() {
               <label>{t('browseTalent.skillsLabel')}</label>
               <input
                 type="text"
-                placeholder="e.g. React, Figma..."
+                placeholder={t('browseTalent.skillPlaceholder')}
                 value={skillSearch}
                 onChange={e => setSkillSearch(e.target.value)}
               />
@@ -218,15 +218,15 @@ export default function BrowseTalent() {
 
             <div className="filter-group">
               <label className="toggle-label" style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                <span>Verified Only</span>
+                <span>{t('browseTalent.verifiedOnlyShort')}</span>
                 <input type="checkbox" checked={verifiedOnly} onChange={(e) => setVerifiedOnly(e.target.checked)} />
               </label>
             </div>
 
             <div className="filter-group">
-              <label>Min Rating</label>
+              <label>{t('browseTalent.minRating')}</label>
               <select value={minRating} onChange={(e) => setMinRating(e.target.value)}>
-                <option value="Any">Any</option>
+                <option value="Any">{t('browseTalent.anyRating')}</option>
                 <option value="3">3+ ⭐</option>
                 <option value="4">4+ ⭐</option>
                 <option value="4.5">4.5+ ⭐</option>
@@ -234,13 +234,13 @@ export default function BrowseTalent() {
             </div>
 
             <div className="filter-group">
-              <label>Sort By</label>
+              <label>{t('browseTalent.sortBy')}</label>
               <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                <option value="Newest">Newest</option>
-                <option value="Top Rated">Top Rated</option>
-                <option value="Most Orders">Most Orders</option>
-                <option value="Price Low to High">Price ↑</option>
-                <option value="Price High to Low">Price ↓</option>
+                <option value="Newest">{t('browseJobs.newest')}</option>
+                <option value="Top Rated">{t('browseJobs.budgetHigh')}</option>
+                <option value="Most Orders">{t('browseJobs.mostProposals')}</option>
+                <option value="Price Low to High">{t('browseJobs.budgetLow')}</option>
+                <option value="Price High to Low">{t('browseJobs.budgetHigh')}</option>
               </select>
             </div>
 
@@ -255,7 +255,7 @@ export default function BrowseTalent() {
           {/* Results */}
           <main className="results-container">
             <div className="results-header">
-              <h2>{totalCount} {totalCount === 1 ? 'freelancer' : 'freelancers'} found</h2>
+              <h2>{totalCount} {totalCount === 1 ? t('browseTalent.freelancerSingle') : t('browseTalent.freelancerPlural')} {t('browseTalent.found')}</h2>
             </div>
 
             {loading ? (

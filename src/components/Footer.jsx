@@ -38,8 +38,7 @@ export default function Footer() {
               maxWidth: '240px',
               lineHeight: '1.6',
             }}>
-              Armenia and the Caucasus
-              region's first freelance marketplace.
+              {t('footer.marketplace')}
             </p>
           </div>
 
